@@ -12,8 +12,26 @@ namespace TWork.Models.Entities
         public TWorkDbContext(DbContextOptions<TWorkDbContext> options) : base(options)
         { }
 
-        public DbSet<TEAM> Teams { get; set; }
-        public DbSet<TASK> Tasks { get; set; }
-        public DbSet<COMMENT> Comments { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);          
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            base.OnConfiguring(optionsBuilder);
+
+            optionsBuilder.UseLazyLoadingProxies();
+        }
+
+        public DbSet<TEAM> TEAMs { get; set; }
+        public DbSet<TASK> TASKs { get; set; }
+        public DbSet<COMMENT> COMMENTs { get; set; }
+        public DbSet<USER_TEAM> USERS_TEAMs { get; set; }
+        public DbSet<USER_TEAM_ROLES> USER_TEAM_ROLEs { get; set; }
+        public DbSet<TASK_STATUS> TASK_STATUSes { get; set; }
+        public DbSet<ROLE> ROLEs { get; set; }
+        public DbSet<MESSAGE> MESSAGEs { get; set; }
+        public DbSet<MESSAGE_TYPE> MESSAGE_TYPEs { get; set; }
     }
 }

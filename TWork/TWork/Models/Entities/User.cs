@@ -10,8 +10,9 @@ namespace TWork.Models.Entities
     [Table("AspNetUsers")]
     public class USER : IdentityUser
     {
-        public virtual ICollection<TEAM> TEAMs { get; set; }
+        public virtual ICollection<USER_TEAM> USERS_TEAMs { get; set; }
         public virtual ICollection<TASK> TASKs { get; set; }
         public virtual ICollection<COMMENT> COMMENTs { get; set; }
+        public virtual ICollection<USER_TEAM_ROLES> USER_TEAM_ROLEs { get; set; }
     }
 }
