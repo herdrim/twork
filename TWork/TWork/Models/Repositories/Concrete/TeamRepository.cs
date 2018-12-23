@@ -15,7 +15,8 @@ namespace TWork.Models.Repositories.Concrete
             _ctx = ctx;
         }
 
-        public IEnumerable<TEAM> Teams { get => _ctx.TEAMs; }
+        public IEnumerable<TEAM> GetAllTeams() 
+            => _ctx.TEAMs;
 
         public TEAM GetTeamById(int teamId) 
             => _ctx.TEAMs.FirstOrDefault(x => x.ID == teamId);

@@ -10,6 +10,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using TWork.Models.Entities;
+using TWork.Models.Services;
+using TWork.Models.Services.Concrete;
+using TWork.Models.Repositories;
+using TWork.Models.Repositories.Concrete;
+using TWork.Models.ModelValidators;
+using TWork.Models.ModelValidators.Concrete;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
 
 namespace TWork
 {
@@ -39,7 +47,10 @@ namespace TWork
                 //options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<TWorkDbContext>();
 
-            
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<IUserRepository, UserRepository>();
+            services.AddTransient<ITeamRepository, TeamRepository>();
+            services.AddTransient<IRegisterUserModelValidator, RegisterUserModelValidator>();
             services.AddMvc();
         }
 
@@ -52,7 +63,7 @@ namespace TWork
                 app.UseStatusCodePages();
             }
             app.UseStaticFiles();
-            
+
             app.UseAuthentication();
             app.UseMvc(options =>
             options.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"));

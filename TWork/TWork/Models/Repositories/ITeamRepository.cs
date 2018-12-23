@@ -8,7 +8,7 @@ namespace TWork.Models.Repositories
 {
     interface ITeamRepository
     {
-        IEnumerable<TEAM> Teams { get; }
+        IEnumerable<TEAM> GetAllTeams();
         TEAM GetTeamById(int teamId);
         IEnumerable<TEAM> GetTeamsByUser(USER user);
         IEnumerable<TEAM> GetTeamsByUserId(string userId);
