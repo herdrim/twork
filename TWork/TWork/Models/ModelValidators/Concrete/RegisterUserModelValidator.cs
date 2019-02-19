@@ -18,25 +18,25 @@ namespace TWork.Models.ModelValidators.Concrete
             _userRepository = userRepository;
         }
 
-        public async Task<bool> ValidateRegisterUserModel(RegisterUserModel userModel, ModelStateDictionary ModelState)
+        public async Task<bool> ValidateRegisterUserModel(RegisterUserViewModel userModel, ModelStateDictionary ModelState)
         {
             bool isError = false;
 
             USER email = await _userRepository.GetUserByEmail(userModel.Email);
             if (email != null)
             {
-                ModelState.AddModelError(nameof(RegisterUserModel.Email), "E-mail is already taken");
+                ModelState.AddModelError(nameof(RegisterUserViewModel.Email), "E-mail is already taken");
                 isError = true;
             }
             USER userName = await _userRepository.GetUserByUserName(userModel.UserName);
             if (userName != null)
             {
-                ModelState.AddModelError(nameof(RegisterUserModel.UserName), "UserName is already taken");
+                ModelState.AddModelError(nameof(RegisterUserViewModel.UserName), "UserName is already taken");
                 isError = true;
             }
             if (userModel.Password.Length < 4)
             {
-                ModelState.AddModelError(nameof(RegisterUserModel.Password), "Password is too short");
+                ModelState.AddModelError(nameof(RegisterUserViewModel.Password), "Password is too short");
                 isError = true;
             }
 

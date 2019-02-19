@@ -6,14 +6,11 @@ using System.Threading.Tasks;
 
 namespace TWork.Models.ViewModels
 {
-    public class RegisterUserModel
+    public class LoginUserViewModel
     {
         [Required]
         [UIHint("email")]
         public string Email { get; set; }
-
-        [Required]
-        public string UserName { get; set; }
 
         [Required]
         [UIHint("password")]

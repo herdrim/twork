@@ -1,0 +1,8 @@
+﻿@model TWork.Models.ViewModels.MessageViewModel
+
+<div>
+    <h4>@Html.DisplayFor(model => model.Title)</h4>
+    <p>@Html.DisplayFor(model => model.SendDate)</p>
+    <p>@Html.Raw(Model.Text)</p>
+</div>
+

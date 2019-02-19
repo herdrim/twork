@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using TWork.Models.Entities;
 
@@ -27,6 +28,9 @@ namespace TWork.Models.Repositories.Concrete
 
         public async Task<USER> GetUserByUserName(string userName) 
             => await _userManager.FindByNameAsync(userName);
+
+        public async Task<USER> GetUserByContext(ClaimsPrincipal user)
+            => await _userManager.GetUserAsync(user);
 
     }
 }

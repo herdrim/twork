@@ -20,7 +20,7 @@ namespace TWork.Models.Services.Concrete
         }
 
 
-        public async Task<bool> LoginAsync(LoginUserModel userModel)
+        public async Task<bool> LoginAsync(LoginUserViewModel userModel)
         {
             bool retVal = false;
             USER user = await _userManager.FindByEmailAsync(userModel.Email);
@@ -34,7 +34,7 @@ namespace TWork.Models.Services.Concrete
             return retVal;
         }
 
-        public async Task<IdentityResult> CreateUserAsync(RegisterUserModel registerUserModel)
+        public async Task<IdentityResult> CreateUserAsync(RegisterUserViewModel registerUserModel)
         {
             USER user = new USER
             {

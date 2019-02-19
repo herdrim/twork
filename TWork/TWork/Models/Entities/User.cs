@@ -13,6 +13,6 @@ namespace TWork.Models.Entities
         public virtual ICollection<USER_TEAM> USERS_TEAMs { get; set; }
         public virtual ICollection<TASK> TASKs { get; set; }
         public virtual ICollection<COMMENT> COMMENTs { get; set; }
-        public virtual ICollection<USER_TEAM_ROLES> USER_TEAM_ROLEs { get; set; }
+        public virtual ICollection<USER_TEAM_ROLES> USER_TEAM_ROLEs { get; set; }        
     }
 }

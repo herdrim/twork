@@ -9,8 +9,8 @@ namespace TWork.Models.Services
 {
     public interface IUserService
     {
-        Task<bool> LoginAsync(LoginUserModel userModel);
-        Task<IdentityResult> CreateUserAsync(RegisterUserModel registerUserModel);
+        Task<bool> LoginAsync(LoginUserViewModel userModel);
+        Task<IdentityResult> CreateUserAsync(RegisterUserViewModel registerUserModel);
         Task SingOutAsync();
     }
 }

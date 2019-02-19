@@ -17,6 +17,10 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
+    @if (!String.IsNullOrEmpty(User.Identity.Name))
+    {
+        <a class="btn btn-danger" href="Account/Logout">Wyloguj</a>
+    }
 
     <div>@RenderBody()</div>
 

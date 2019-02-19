@@ -1,0 +1,36 @@
+﻿@model IEnumerable<TWork.Models.ViewModels.TeamMessageViewModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Title
+            </th>
+            <th>
+                Date
+            </th>
+            <th>
+                Message Type
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SendDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MessageTypeName)
+            </td>
+            <td>
+                <a class="btn btn-succes" asp-action="Content" asp-route-messageId="@item.MessageId">Show</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

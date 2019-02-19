@@ -6,7 +6,7 @@ using TWork.Models.Entities;
 
 namespace TWork.Models.Repositories
 {
-    interface ITeamRepository
+    public interface ITeamRepository
     {
         IEnumerable<TEAM> GetAllTeams();
         TEAM GetTeamById(int teamId);

@@ -1,0 +1,36 @@
+﻿@model List<TWork.Models.ViewModels.OtherTeamViewModel>
+
+<!DOCTYPE html>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Team Name
+            </th>
+            <th>
+                Members Count
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MembersCount)
+            </td>
+            <td>
+                <form asp-action="SendTeamJoinRequest" asp-route-teamId="@item.Id" method="post">
+                    <button type="submit" disabled="@item.IsRequestSent" class="btn btn-sm btn-primary">Request</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+

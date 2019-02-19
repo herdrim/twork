@@ -33,7 +33,7 @@ namespace TWork.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Login(LoginUserModel details, string returnUrl)
+        public async Task<IActionResult> Login(LoginUserViewModel details, string returnUrl)
         {
             if (ModelState.IsValid)
             {
@@ -41,7 +41,7 @@ namespace TWork.Controllers
                 if(succeeded)
                     return Redirect(returnUrl ?? "/");                
             }
-            ModelState.AddModelError(nameof(LoginUserModel.Email), "Invalid user or password");
+            ModelState.AddModelError(nameof(LoginUserViewModel.Email), "Invalid user or password");
 
             return View(details);
         }
@@ -57,7 +57,7 @@ namespace TWork.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(RegisterUserModel model)
+        public async Task<IActionResult> Register(RegisterUserViewModel model)
         {
             if (ModelState.IsValid)
             {

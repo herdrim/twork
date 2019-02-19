@@ -1,0 +1,34 @@
+﻿@model UserTeamsRolesViewModel
+
+@{
+    ViewData["Title"] = "View";
+}
+
+<h1>View</h1>
+
+<p>Witaj @Model.UserName</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Team</th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (UserTeamViewModel team in Model.UserTeams)
+        {
+            <tr>
+                <td><a asp-action="TeamMessages" asp-controller="Message" asp-route-teamId="@team.TeamId">@team.TeamName</a></td>
+                <td>
+                    <ul>
+                        @foreach (RoleViewModel role in team.UserTeamRoles)
+                        {
+                            <li>@role.RoleName</li>
+                        }
+                    </ul>
+                </td>
+            </tr>
+        }
+
+    </tbody>
+</table>

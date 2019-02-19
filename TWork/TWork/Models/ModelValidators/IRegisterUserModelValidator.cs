@@ -9,6 +9,6 @@ namespace TWork.Models.ModelValidators
 {
     public interface IRegisterUserModelValidator
     {
-        Task<bool> ValidateRegisterUserModel(RegisterUserModel userModel, ModelStateDictionary ModelState);
+        Task<bool> ValidateRegisterUserModel(RegisterUserViewModel userModel, ModelStateDictionary ModelState);
     }
 }

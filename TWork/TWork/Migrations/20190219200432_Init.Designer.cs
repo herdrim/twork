@@ -10,14 +10,14 @@ using TWork.Models.Entities;
 namespace TWork.Migrations
 {
     [DbContext(typeof(TWorkDbContext))]
-    [Migration("20181222115846_InitTWorkDB")]
-    partial class InitTWorkDB
+    [Migration("20190219200432_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.0-rtm-35687")
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -43,6 +43,15 @@ namespace TWork.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1d2fc205-288e-411e-b63f-303d80e9528f",
+                            ConcurrencyStamp = "0831bff1-df37-4c6b-92b3-87cdb698160e",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -174,6 +183,12 @@ namespace TWork.Migrations
 
                     b.Property<string>("TEXT");
 
+                    b.Property<string>("USER_FROM_ID");
+
+                    b.Property<string>("USER_TO_ID");
+
+                    b.Property<bool>("isReaded");
+
                     b.HasKey("ID");
 
                     b.HasIndex("COMMENT_ID");
@@ -181,6 +196,10 @@ namespace TWork.Migrations
                     b.HasIndex("MESSAGE_TYPE_ID");
 
                     b.HasIndex("TEAM_ID");
+
+                    b.HasIndex("USER_FROM_ID");
+
+                    b.HasIndex("USER_TO_ID");
 
                     b.ToTable("MESSAGEs");
                 });
@@ -210,11 +229,11 @@ namespace TWork.Migrations
 
                     b.Property<bool>("CAN_CREATE_TASK");
 
-                    b.Property<int>("DESCRIPTION");
+                    b.Property<string>("DESCRIPTION");
 
                     b.Property<bool>("IS_REQUIRED");
 
-                    b.Property<int>("NAME");
+                    b.Property<string>("NAME");
 
                     b.HasKey("ID");
 
@@ -453,6 +472,14 @@ namespace TWork.Migrations
                     b.HasOne("TWork.Models.Entities.TEAM", "TEAM")
                         .WithMany()
                         .HasForeignKey("TEAM_ID");
+
+                    b.HasOne("TWork.Models.Entities.USER", "USER_FROM")
+                        .WithMany()
+                        .HasForeignKey("USER_FROM_ID");
+
+                    b.HasOne("TWork.Models.Entities.USER", "USER_TO")
+                        .WithMany()
+                        .HasForeignKey("USER_TO_ID");
                 });
 
             modelBuilder.Entity("TWork.Models.Entities.TASK", b =>

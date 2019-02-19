@@ -47,20 +47,36 @@ namespace TWork
                 //options.User.RequireUniqueEmail = true;
             }).AddEntityFrameworkStores<TWorkDbContext>();
 
-            services.AddTransient<IUserService, UserService>();
+            #region Repositories
+
             services.AddTransient<IUserRepository, UserRepository>();
             services.AddTransient<ITeamRepository, TeamRepository>();
+            services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IMessageRepository, MessageRepository>();
+
+            #endregion
+
+            #region Services
+
+            services.AddTransient<IUserService, UserService>();
+            services.AddTransient<ITeamService, TeamService>();
+            services.AddTransient<IMessageService, MessageService>();
+
+            #endregion
+
             services.AddTransient<IRegisterUserModelValidator, RegisterUserModelValidator>();
             services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, UserManager<USER> userManager, TWorkDbContext ctx)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseStatusCodePages();
+                TWorkDbInitializer.SeedUser(userManager);
+                TWorkDbInitializer.SeedData(ctx);
             }
             app.UseStaticFiles();
 

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace TWork.Migrations
 {
-    public partial class InitTWorkDB : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -66,8 +66,8 @@ namespace TWork.Migrations
                 {
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    NAME = table.Column<int>(nullable: false),
-                    DESCRIPTION = table.Column<int>(nullable: false),
+                    NAME = table.Column<string>(nullable: true),
+                    DESCRIPTION = table.Column<string>(nullable: true),
                     IS_REQUIRED = table.Column<bool>(nullable: false),
                     CAN_CREATE_TASK = table.Column<bool>(nullable: false),
                     CAN_ASSIGN_TASK = table.Column<bool>(nullable: false),
@@ -356,9 +356,12 @@ namespace TWork.Migrations
                     ID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     TEXT = table.Column<string>(nullable: true),
+                    isReaded = table.Column<bool>(nullable: false),
                     MESSAGE_TYPE_ID = table.Column<int>(nullable: true),
                     TEAM_ID = table.Column<int>(nullable: true),
-                    COMMENT_ID = table.Column<int>(nullable: true)
+                    COMMENT_ID = table.Column<int>(nullable: true),
+                    USER_FROM_ID = table.Column<string>(nullable: true),
+                    USER_TO_ID = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -381,7 +384,24 @@ namespace TWork.Migrations
                         principalTable: "TEAMs",
                         principalColumn: "ID",
                         onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MESSAGEs_AspNetUsers_USER_FROM_ID",
+                        column: x => x.USER_FROM_ID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_MESSAGEs_AspNetUsers_USER_TO_ID",
+                        column: x => x.USER_TO_ID,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "1d2fc205-288e-411e-b63f-303d80e9528f", "0831bff1-df37-4c6b-92b3-87cdb698160e", "Admin", "ADMIN" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -456,6 +476,16 @@ namespace TWork.Migrations
                 name: "IX_MESSAGEs_TEAM_ID",
                 table: "MESSAGEs",
                 column: "TEAM_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MESSAGEs_USER_FROM_ID",
+                table: "MESSAGEs",
+                column: "USER_FROM_ID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_MESSAGEs_USER_TO_ID",
+                table: "MESSAGEs",
+                column: "USER_TO_ID");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TASKs_TASK_STATUS_ID",
