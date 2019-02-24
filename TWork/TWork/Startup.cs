@@ -18,6 +18,7 @@ using TWork.Models.ModelValidators;
 using TWork.Models.ModelValidators.Concrete;
 using Microsoft.Extensions.FileProviders;
 using System.IO;
+using Microsoft.AspNetCore.Rewrite.Internal.UrlActions;
 
 namespace TWork
 {
@@ -61,6 +62,7 @@ namespace TWork
             services.AddTransient<IUserService, UserService>();
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<IMessageService, MessageService>();
+            services.AddTransient<IRoleService, RoleService>();
 
             #endregion
 
@@ -79,6 +81,13 @@ namespace TWork
                 TWorkDbInitializer.SeedData(ctx);
             }
             app.UseStaticFiles();
+
+            app.UseStatusCodePages(async context => {
+                if (context.HttpContext.Response.StatusCode == 403)
+                {
+                    context.HttpContext.Response.Redirect("Account/AccessDenied");
+                }
+            });
 
             app.UseAuthentication();
             app.UseMvc(options =>

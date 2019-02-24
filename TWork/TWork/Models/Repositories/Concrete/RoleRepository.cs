@@ -34,5 +34,10 @@ namespace TWork.Models.Repositories.Concrete
 
             return roles;
         }
+
+        public ROLE GetBasicRole()
+        {
+            return _ctx.ROLEs.FirstOrDefault(x => x.NAME == "Member");
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TWork.Models.Common;
 using TWork.Models.Entities;
 using TWork.Models.Repositories;
 using TWork.Models.ViewModels;
@@ -13,12 +14,14 @@ namespace TWork.Models.Services.Concrete
         ITeamRepository _teamRepository;
         IRoleRepository _roleRepository;
         IMessageRepository _messageRepository;
+        IRoleService _roleService;
 
-        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository)
+        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService)
         {
             _teamRepository = teamRepository;
             _roleRepository = roleRepository;
             _messageRepository = messageRepository;
+            _roleService = roleService;
         }
 
         public List<OtherTeamViewModel> GetOtherTeamsByUser(USER user)
@@ -82,7 +85,7 @@ namespace TWork.Models.Services.Concrete
 
         public void SendJoinRequest(int teamId, USER user)
         {
-            string msgContent = "Użytkownik " + user.Email + " poprosił o dołączenie go do zespołu.</br><a href='#'>Akceptuj</a>&ensp;<a href='#'>Odrzuć</a>";
+            string msgContent = "Użytkownik " + user.Email + " poprosił o dołączenie go do zespołu.</br>";
             MESSAGE joinRequest = new MESSAGE
             {
                 MESSAGE_TYPE = _messageRepository.GetMessageTypeByName(MessageTypeNames.TEAM_JOIN_REQUEST),
@@ -100,21 +103,31 @@ namespace TWork.Models.Services.Concrete
             List<TeamMessageViewModel> teamMessages = new List<TeamMessageViewModel>();
             TEAM team = _teamRepository.GetTeamById(teamId);
             IEnumerable<MESSAGE> messages = _messageRepository.GetMessagesByTeam(team);
-            
-            foreach(MESSAGE msg in messages)
+
+            if (messages != null)
             {
-                teamMessages.Add(new TeamMessageViewModel
+                foreach (MESSAGE msg in messages)
                 {
-                    MessageId = msg.ID,
-                    MessageTypeName = msg.MESSAGE_TYPE.NAME,
-                    IsReaded = msg.IS_READED,
-                    SendDate = msg.SEND_DATE,
-                    Sender = msg.USER_FROM,
-                    Title = MessageTypeNames.TEAM_JOIN_REQUEST + " od użytkownika " + msg.USER_FROM.UserName // DO ZMIANY
-                });
+                    teamMessages.Add(new TeamMessageViewModel
+                    {
+                        MessageId = msg.ID,
+                        MessageTypeName = msg.MESSAGE_TYPE.NAME,
+                        IsReaded = msg.IS_READED,
+                        SendDate = msg.SEND_DATE,
+                        Sender = msg.USER_FROM,
+                        Title = MessageTypeNames.TEAM_JOIN_REQUEST + " od użytkownika " + msg.USER_FROM.UserName // DO ZMIANY
+                    });
+                }
             }
 
             return teamMessages;
+        }
+
+        public bool CheckPermissionToManageUsers(USER user, int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            UserTeamPermissionsViewModel userTeamPermissions = _roleService.GetPermissionsForUserTeam(user, team);
+            return userTeamPermissions.CanManageUsers;
         }
     }
 }

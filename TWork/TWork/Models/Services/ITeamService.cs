@@ -13,5 +13,6 @@ namespace TWork.Models.Services
         List<OtherTeamViewModel> GetOtherTeamsByUser(USER user);
         void SendJoinRequest(int teamId, USER user);
         IEnumerable<TeamMessageViewModel> GetTeamMessages(int teamId);
+        bool CheckPermissionToManageUsers(USER user, int teamId);
     }
 }

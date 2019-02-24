@@ -43,7 +43,8 @@ namespace TWork.Models.Entities
                     IS_REQUIRED = true,
                     CAN_ASSIGN_TASK = true,
                     CAN_COMMENT = true,
-                    CAN_CREATE_TASK = true
+                    CAN_CREATE_TASK = true,
+                    CAN_MANAGE_USERS = true
                 };
                 ROLE role2 = new ROLE
                 {
@@ -52,7 +53,18 @@ namespace TWork.Models.Entities
                     IS_REQUIRED = false,
                     CAN_ASSIGN_TASK = false,
                     CAN_COMMENT = true,
-                    CAN_CREATE_TASK = false
+                    CAN_CREATE_TASK = false,
+                    CAN_MANAGE_USERS = true
+                };
+                ROLE role3 = new ROLE
+                {
+                    NAME = "Member",
+                    DESCRIPTION = "Member",
+                    IS_REQUIRED = false,
+                    CAN_ASSIGN_TASK = false,
+                    CAN_COMMENT = false,
+                    CAN_CREATE_TASK = false,
+                    CAN_MANAGE_USERS = false
                 };
 
                 USER admin = ctx.Users.FirstOrDefault(x => x.Email == "admin@example.com");
@@ -64,7 +76,7 @@ namespace TWork.Models.Entities
                 USER_TEAM_ROLES userTeamRoles3 = new USER_TEAM_ROLES { USER = admin, TEAM = team2, ROLE = role2 };
 
                 ctx.TEAMs.AddRange(team, team2, team3, team4);
-                ctx.ROLEs.AddRange(role, role2);
+                ctx.ROLEs.AddRange(role, role2, role3);
                 ctx.USERS_TEAMs.AddRange(userTeam, userTeam2);
                 ctx.USER_TEAM_ROLEs.AddRange(userTeamRoles, userTeamRoles2, userTeamRoles3);
 

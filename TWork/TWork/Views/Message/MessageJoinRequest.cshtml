@@ -1,0 +1,14 @@
+﻿@model MessageViewModel
+
+<div>
+    <h4>@Html.DisplayFor(model => model.Title)</h4>
+    <p>@Html.DisplayFor(model => model.SendDate)</p>
+    <p>@Html.Raw(Model.Text)</p>
+    <form asp-action="AcceptUserJoinRequest" asp-controller="MyTeam" asp-route-userId="@Model.UserFrom.Id" asp-route-teamToJoinId="@Model.Team.ID" method="post">        
+        <button type="submit" class="btn btn-sm btn-success">Accept user request</button>
+    </form>
+    <form asp-action="CancelUserJoinRequest" asp-controller="MyTeam" asp-route-userId="@Model.UserFrom.Id" asp-route-teamToJoinId="@Model.Team.ID" method="post">
+        <button type="submit" class="btn btn-sm btn-danger">Cancel user request</button>
+    </form>
+</div>
+

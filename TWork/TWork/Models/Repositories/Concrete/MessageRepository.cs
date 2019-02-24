@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TWork.Models.Common;
 using TWork.Models.Entities;
 
 namespace TWork.Models.Repositories.Concrete
@@ -27,7 +28,7 @@ namespace TWork.Models.Repositories.Concrete
         public IEnumerable<MESSAGE> GetMessagesFromUser(USER user, string messageTypeName = null)
         {
             IEnumerable<MESSAGE> retMessages = null;
-            if (!String.IsNullOrEmpty(messageTypeName))
+            if (String.IsNullOrEmpty(messageTypeName))
                 retMessages =_ctx.MESSAGEs.Where(x => x.USER_FROM == user);
             else
                 retMessages = _ctx.MESSAGEs.Where(x => x.USER_FROM == user && x.MESSAGE_TYPE.NAME == messageTypeName);
@@ -38,7 +39,7 @@ namespace TWork.Models.Repositories.Concrete
         public IEnumerable<MESSAGE> GetMessagesToUser(USER user, string messageTypeName = null)
         {
             IEnumerable<MESSAGE> retMessages = null;
-            if (!String.IsNullOrEmpty(messageTypeName))
+            if (String.IsNullOrEmpty(messageTypeName))
                 retMessages = _ctx.MESSAGEs.Where(x => x.USER_TO == user);
             else
                 retMessages = _ctx.MESSAGEs.Where(x => x.USER_TO == user && x.MESSAGE_TYPE.NAME == messageTypeName);
@@ -52,6 +53,9 @@ namespace TWork.Models.Repositories.Concrete
         public MESSAGE_TYPE GetMessageTypeByName(string msgTypeName)
             => _ctx.MESSAGE_TYPEs.FirstOrDefault(x => x.NAME == msgTypeName);
 
+        public IEnumerable<MESSAGE> GetTeamJoinRequestByUserFrom(USER user, TEAM team)
+            => _ctx.MESSAGEs.Where(x => x.USER_FROM == user && x.TEAM == team && x.MESSAGE_TYPE.NAME == MessageTypeNames.TEAM_JOIN_REQUEST);
+
 
         public void AddMessage(MESSAGE message)
         {
@@ -64,5 +68,17 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.MESSAGEs.Update(message);
             _ctx.SaveChanges();
         }
+
+        public void DeleteMessage(MESSAGE message)
+        {
+            _ctx.MESSAGEs.Remove(message);
+            _ctx.SaveChanges();
+        }
+
+        public void DeleteMessages(IEnumerable<MESSAGE> messages)
+        {
+            _ctx.MESSAGEs.RemoveRange(messages);
+            _ctx.SaveChanges();
+        }        
     }
 }

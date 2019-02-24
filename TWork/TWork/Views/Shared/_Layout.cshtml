@@ -19,7 +19,7 @@
 <body>
     @if (!String.IsNullOrEmpty(User.Identity.Name))
     {
-        <a class="btn btn-danger" href="Account/Logout">Wyloguj</a>
+        <a class="btn btn-danger" asp-action="Logout" asp-controller="Account">Wyloguj</a>
     }
 
     <div>@RenderBody()</div>

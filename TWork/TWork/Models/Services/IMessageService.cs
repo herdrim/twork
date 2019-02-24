@@ -11,5 +11,9 @@ namespace TWork.Models.Services
     {
         bool CheckAccessToMessage(int messageId, USER user);
         MessageViewModel GetMessageToRead(int messageId);
+        Task<IEnumerable<MessageViewModel>> GetMessagesToUser(string userId);
+        Task RemoveTeamJoinRequestByUserFrom(string userId, int teamId);
+        Task CreateNewMessageForUser(string userToId, string userFromId, string content, string messageTypeName = null);
+        void DeleteMessage(int messageId);
     }
 }

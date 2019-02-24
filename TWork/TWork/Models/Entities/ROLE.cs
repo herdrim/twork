@@ -14,6 +14,7 @@ namespace TWork.Models.Entities
         public bool CAN_CREATE_TASK { get; set; }
         public bool CAN_ASSIGN_TASK { get; set; }
         public bool CAN_COMMENT { get; set; }
+        public bool CAN_MANAGE_USERS { get; set; }
 
 
         public virtual ICollection<USER_TEAM_ROLES> USER_TEAM_ROLEs { get; set; }

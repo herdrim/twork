@@ -32,5 +32,7 @@ namespace TWork.Models.Repositories.Concrete
         public async Task<USER> GetUserByContext(ClaimsPrincipal user)
             => await _userManager.GetUserAsync(user);
 
+        public async Task<USER> GetUserById(string userId)
+            => await _userManager.FindByIdAsync(userId);        
     }
 }

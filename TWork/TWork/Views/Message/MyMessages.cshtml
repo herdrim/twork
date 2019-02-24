@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MessageViewModel>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SendDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.SendDate)
+            </td>
+            <td>
+                <a class="btn btn-sm btn-primary" asp-action="Content" asp-route-messageId="@item.Id">Show</a>
+                <form asp-action="DeleteMessage" asp-route-messageId="@item.Id" method="post">
+                    <button type="submit" class="btn btn-sm btn-danger">Deletet</button>
+                </form>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

@@ -10,11 +10,9 @@ namespace TWork.Models.Repositories
     public interface IUserRepository
     {
         IEnumerable<USER> GetAllUsers();
-
         Task<USER> GetUserByEmail(string email);
-
         Task<USER> GetUserByUserName(string userName);
-
         Task<USER> GetUserByContext(ClaimsPrincipal user);
+        Task<USER> GetUserById(string userId);
     }
 }

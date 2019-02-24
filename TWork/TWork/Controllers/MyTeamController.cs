@@ -16,11 +16,17 @@ namespace TWork.Controllers
     {
         ITeamService _teamService;
         IUserRepository _userRepository;
+        IUserService _userService;
+        ITeamRepository _teamRepository;
+        IMessageService _messageService;
 
-        public MyTeamController(ITeamService teamService, IUserRepository userRepository)
+        public MyTeamController(ITeamService teamService, IUserRepository userRepository, IUserService userService, ITeamRepository teamRepository, IMessageService messageService)
         {
             _teamService = teamService;
             _userRepository = userRepository;
+            _userService = userService;
+            _teamRepository = teamRepository;
+            _messageService = messageService;
         }
 
         public async Task<IActionResult> Index()
@@ -46,6 +52,32 @@ namespace TWork.Controllers
             _teamService.SendJoinRequest(teamId, user);
 
             return RedirectToAction("SearchTeams");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AcceptUserJoinRequest(string userId, int teamToJoinId)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamService.CheckPermissionToManageUsers(user, teamToJoinId))
+            {
+                bool isAssigned = await _userService.AssignUserToTeamWithBasicRole(userId, user.Id, teamToJoinId);
+                if (isAssigned)
+                    return RedirectToAction("TeamMessages", "Message", new { teamId = teamToJoinId });
+            }
+
+            return RedirectToAction("AccessDenied", "Account");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CancelUserJoinRequest(string userId, int teamToJoinId)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamService.CheckPermissionToManageUsers(user, teamToJoinId))
+            {
+                await _messageService.RemoveTeamJoinRequestByUserFrom(userId, teamToJoinId);
+                return RedirectToAction("TeamMessages", "Message", new { teamId = teamToJoinId });
+            }
+            return RedirectToAction("AccessDenied", "Account");
         }
     }
 }

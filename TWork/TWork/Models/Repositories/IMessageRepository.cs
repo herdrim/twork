@@ -13,16 +13,12 @@ namespace TWork.Models.Repositories
         IEnumerable<MESSAGE> GetMessagesToUser(USER user, string messageTypeName = null);
         IEnumerable<MESSAGE_TYPE> GetAllMessageTypes();
         IEnumerable<MESSAGE> GetMessagesByTeam(TEAM team);
+        IEnumerable<MESSAGE> GetTeamJoinRequestByUserFrom(USER user, TEAM team);
         MESSAGE GetMessageById(int messageId);
         MESSAGE_TYPE GetMessageTypeByName(string msgTypeName);
         void AddMessage(MESSAGE message);
-        void UpdateMessage(MESSAGE message);
-    }
-
-
-    public static class MessageTypeNames
-    {
-        public const string TEAM_JOIN_REQUEST = "TEAM_JOIN_REQUEST";
-        public const string INFO = "INFO";
+        void UpdateMessage(MESSAGE message);        
+        void DeleteMessage(MESSAGE message);
+        void DeleteMessages(IEnumerable<MESSAGE> messages);
     }
 }

@@ -12,6 +12,7 @@ namespace TWork.Models.Repositories
         TEAM GetTeamById(int teamId);
         IEnumerable<TEAM> GetTeamsByUser(USER user);
         IEnumerable<TEAM> GetTeamsByUserId(string userId);
-        void AddTeam(TEAM team);        
+        void AddTeam(TEAM team);
+        void AssignUserToTeamWithRole(USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole);
     }
 }

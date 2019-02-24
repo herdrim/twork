@@ -32,5 +32,18 @@ namespace TWork.Models.Repositories.Concrete
             await _ctx.AddAsync(team);
             await _ctx.SaveChangesAsync();
         }
+
+        public void AssignUserToTeamWithRole(USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole)
+        {
+            if (_ctx.USERS_TEAMs.FirstOrDefault(x => x.USER == userTeam.USER && x.TEAM == userTeam.TEAM) == null)
+            {
+                _ctx.USERS_TEAMs.Add(userTeam);
+            }
+            if (_ctx.USER_TEAM_ROLEs.FirstOrDefault(x => x.ROLE == userTeamRole.ROLE && x.TEAM == userTeamRole.TEAM && x.USER == userTeamRole.USER) == null)
+            {
+                _ctx.USER_TEAM_ROLEs.Add(userTeamRole);
+            }
+            _ctx.SaveChanges();
+        }
     }
 }

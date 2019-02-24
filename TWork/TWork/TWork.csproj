@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190203172533_SeedUser.cs" />
+    <Compile Remove="Migrations\20190203172533_SeedUser.Designer.cs" />
+    <Compile Remove="Migrations\20190204132325_Init.cs" />
+    <Compile Remove="Migrations\20190204132325_Init.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="2.2.0" />
