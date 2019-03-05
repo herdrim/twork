@@ -9,6 +9,7 @@ namespace TWork.Models.Repositories
     public interface IRoleRepository
     {
         List<ROLE> GetRolesByUserTeam(USER user, TEAM team);
+        ROLE GetRoleByName(string name);
         ROLE GetBasicRole();
     }
 }

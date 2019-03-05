@@ -21,17 +21,14 @@ namespace TWork.Models.Repositories.Concrete
         public TEAM GetTeamById(int teamId) 
             => _ctx.TEAMs.FirstOrDefault(x => x.ID == teamId);
 
+        public TEAM GetTeamByName(string teamName)
+            => _ctx.TEAMs.FirstOrDefault(x => x.NAME == teamName);
+
         public IEnumerable<TEAM> GetTeamsByUser(USER user) 
             => _ctx.USERS_TEAMs.Where(x => x.USER == user).Select(x => x.TEAM);        
 
         public IEnumerable<TEAM> GetTeamsByUserId(string userId) 
             => _ctx.USERS_TEAMs.Where(x => x.USER_ID == userId).Select(x => x.TEAM);
-
-        public async void AddTeam (TEAM team)
-        {
-            await _ctx.AddAsync(team);
-            await _ctx.SaveChangesAsync();
-        }
 
         public void AssignUserToTeamWithRole(USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole)
         {
@@ -43,6 +40,14 @@ namespace TWork.Models.Repositories.Concrete
             {
                 _ctx.USER_TEAM_ROLEs.Add(userTeamRole);
             }
+            _ctx.SaveChanges();
+        }
+
+        public void AddTeam(TEAM team, USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole)
+        {
+            _ctx.TEAMs.Add(team);
+            _ctx.USERS_TEAMs.Add(userTeam);
+            _ctx.USER_TEAM_ROLEs.Add(userTeamRole);
             _ctx.SaveChanges();
         }
     }

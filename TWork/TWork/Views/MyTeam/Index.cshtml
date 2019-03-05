@@ -18,7 +18,7 @@
         @foreach (UserTeamViewModel team in Model.UserTeams)
         {
             <tr>
-                <td><a asp-action="TeamMessages" asp-controller="Message" asp-route-teamId="@team.TeamId">@team.TeamName</a></td>
+                <td><a asp-action="Details" asp-route-teamId="@team.TeamId">@team.TeamName</a></td>
                 <td>
                     <ul>
                         @foreach (RoleViewModel role in team.UserTeamRoles)

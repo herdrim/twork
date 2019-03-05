@@ -15,13 +15,15 @@ namespace TWork.Models.Services.Concrete
         IRoleRepository _roleRepository;
         IMessageRepository _messageRepository;
         IRoleService _roleService;
+        IUserRepository _userRepository;
 
-        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService)
+        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService, IUserRepository userRepository)
         {
             _teamRepository = teamRepository;
             _roleRepository = roleRepository;
             _messageRepository = messageRepository;
             _roleService = roleService;
+            _userRepository = userRepository;
         }
 
         public List<OtherTeamViewModel> GetOtherTeamsByUser(USER user)
@@ -128,6 +130,61 @@ namespace TWork.Models.Services.Concrete
             TEAM team = _teamRepository.GetTeamById(teamId);
             UserTeamPermissionsViewModel userTeamPermissions = _roleService.GetPermissionsForUserTeam(user, team);
             return userTeamPermissions.CanManageUsers;
+        }
+
+        public bool CreateTeam(USER user, string teamName)
+        {
+            bool isNameFree = true;
+            if (_teamRepository.GetTeamByName(teamName) == null)
+            {
+                ROLE role = _roleRepository.GetRoleByName("Leader");
+                TEAM team = new TEAM()
+                {
+                    NAME = teamName
+                };
+                USER_TEAM userTeam = new USER_TEAM()
+                {
+                    TEAM = team,
+                    USER = user
+                };
+                USER_TEAM_ROLES userTeamRole = new USER_TEAM_ROLES()
+                {
+                    USER = user,
+                    TEAM = team,
+                    ROLE = role
+                };
+                _teamRepository.AddTeam(team, userTeam, userTeamRole);
+            }
+            else
+            {
+                isNameFree = false;
+            }
+
+            return isNameFree;
+        }
+
+        public TeamViewModel GetUserTeam(USER user, int teamId)
+        {            
+            TeamViewModel teamViewModel = new TeamViewModel();
+
+            if (IsTeamMember(user, teamId))
+            {
+                TEAM team = _teamRepository.GetTeamById(teamId);
+                teamViewModel.Name = team.NAME;
+                teamViewModel.MembersCount = team.USERS_TEAMs.Count;
+                teamViewModel.TaskCount = team.TASKs.Count;
+            }
+
+            return teamViewModel;
+        }
+
+        public bool IsTeamMember(USER user, int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            if (team.USERS_TEAMs.FirstOrDefault(x => x.USER == user) != null)
+                return true;
+            else
+                return false;
         }
     }
 }

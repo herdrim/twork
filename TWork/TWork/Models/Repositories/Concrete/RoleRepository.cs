@@ -39,5 +39,9 @@ namespace TWork.Models.Repositories.Concrete
         {
             return _ctx.ROLEs.FirstOrDefault(x => x.NAME == "Member");
         }
+
+        public ROLE GetRoleByName(string name)
+            => _ctx.ROLEs.FirstOrDefault(x => x.NAME == name);
+        
     }
 }

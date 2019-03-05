@@ -10,9 +10,10 @@ namespace TWork.Models.Repositories
     {
         IEnumerable<TEAM> GetAllTeams();
         TEAM GetTeamById(int teamId);
+        TEAM GetTeamByName(string teamName);
         IEnumerable<TEAM> GetTeamsByUser(USER user);
-        IEnumerable<TEAM> GetTeamsByUserId(string userId);
-        void AddTeam(TEAM team);
+        IEnumerable<TEAM> GetTeamsByUserId(string userId);        
+        void AddTeam(TEAM team, USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole);
         void AssignUserToTeamWithRole(USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole);
     }
 }

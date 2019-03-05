@@ -36,22 +36,17 @@ namespace TWork.Controllers
 
             return View(model);
         }
-                
-        public async Task<IActionResult> SearchTeams()
+
+        public async Task<IActionResult> Details(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            List<OtherTeamViewModel> model = _teamService.GetOtherTeamsByUser(user);
-
-            return View(model);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> SendTeamJoinRequest(int teamId)
-        {
-            USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            _teamService.SendJoinRequest(teamId, user);
-
-            return RedirectToAction("SearchTeams");
+            if (_teamService.IsTeamMember(user, teamId))
+            {
+                TeamViewModel model = _teamService.GetUserTeam(user, teamId);
+                return View(model);
+            }
+            else
+                return RedirectToAction("AccessDenied", "Account");            
         }
 
         [HttpPost]
