@@ -50,5 +50,11 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.USER_TEAM_ROLEs.Add(userTeamRole);
             _ctx.SaveChanges();
         }
+
+        public void UpdateTeamInfo(TEAM team)
+        {
+            _ctx.TEAMs.Update(team);
+            _ctx.SaveChanges();
+        }
     }
 }

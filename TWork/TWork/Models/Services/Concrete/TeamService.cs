@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -85,6 +86,20 @@ namespace TWork.Models.Services.Concrete
             return userTeamsRoles;
         }
 
+        public string GetUserTeamsJsonForContext(USER user, int? activeTeamId = null)
+        {
+            IEnumerable<TEAM> teams = _teamRepository.GetTeamsByUser(user);
+            TeamJsonModel retModel = new TeamJsonModel
+            {
+                TeamCount = teams.Count(),
+                ActiveTeam = activeTeamId,
+                Teams = teams.Select(x => new TeamInfoJsonModel { TeamId = x.ID, TeamName = x.NAME }).ToList()
+            };            
+            string json = JsonConvert.SerializeObject(retModel);
+
+            return json;
+        }
+
         public void SendJoinRequest(int teamId, USER user)
         {
             string msgContent = "Użytkownik " + user.Email + " poprosił o dołączenie go do zespołu.</br>";
@@ -104,21 +119,24 @@ namespace TWork.Models.Services.Concrete
         {
             List<TeamMessageViewModel> teamMessages = new List<TeamMessageViewModel>();
             TEAM team = _teamRepository.GetTeamById(teamId);
-            IEnumerable<MESSAGE> messages = _messageRepository.GetMessagesByTeam(team);
-
-            if (messages != null)
+            if (team != null)
             {
-                foreach (MESSAGE msg in messages)
+                IEnumerable<MESSAGE> messages = _messageRepository.GetMessagesByTeam(team);
+
+                if (messages != null)
                 {
-                    teamMessages.Add(new TeamMessageViewModel
+                    foreach (MESSAGE msg in messages)
                     {
-                        MessageId = msg.ID,
-                        MessageTypeName = msg.MESSAGE_TYPE.NAME,
-                        IsReaded = msg.IS_READED,
-                        SendDate = msg.SEND_DATE,
-                        Sender = msg.USER_FROM,
-                        Title = MessageTypeNames.TEAM_JOIN_REQUEST + " od użytkownika " + msg.USER_FROM.UserName // DO ZMIANY
-                    });
+                        teamMessages.Add(new TeamMessageViewModel
+                        {
+                            MessageId = msg.ID,
+                            MessageTypeName = msg.MESSAGE_TYPE.NAME,
+                            IsReaded = msg.IS_READED,
+                            SendDate = msg.SEND_DATE,
+                            Sender = msg.USER_FROM,
+                            Title = MessageTypeNames.TEAM_JOIN_REQUEST + " od użytkownika " + msg.USER_FROM.UserName // DO ZMIANY
+                        });
+                    }
                 }
             }
 
@@ -127,8 +145,8 @@ namespace TWork.Models.Services.Concrete
 
         public bool CheckPermissionToManageUsers(USER user, int teamId)
         {
-            TEAM team = _teamRepository.GetTeamById(teamId);
-            UserTeamPermissionsViewModel userTeamPermissions = _roleService.GetPermissionsForUserTeam(user, team);
+            //TEAM team = _teamRepository.GetTeamById(teamId);
+            UserTeamPermissionsViewModel userTeamPermissions = _roleService.GetPermissionsForUserTeam(user, teamId);
             return userTeamPermissions.CanManageUsers;
         }
 
@@ -170,6 +188,7 @@ namespace TWork.Models.Services.Concrete
             if (IsTeamMember(user, teamId))
             {
                 TEAM team = _teamRepository.GetTeamById(teamId);
+                teamViewModel.Id = team.ID;
                 teamViewModel.Name = team.NAME;
                 teamViewModel.MembersCount = team.USERS_TEAMs.Count;
                 teamViewModel.TaskCount = team.TASKs.Count;
@@ -185,6 +204,22 @@ namespace TWork.Models.Services.Concrete
                 return true;
             else
                 return false;
+        }
+
+        public TeamInformationViewModel GetTeamInformation(int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            return new TeamInformationViewModel { TeamName = team.NAME, TeamId = team.ID };
+        }
+
+        public void SaveTeamInformation (TeamInformationViewModel teamInfo)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamInfo.TeamId);
+            if (team.NAME != teamInfo.TeamName)
+            {
+                team.NAME = teamInfo.TeamName;
+                _teamRepository.UpdateTeamInfo(team);
+            }
         }
     }
 }

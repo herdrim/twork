@@ -27,7 +27,7 @@ namespace TWork.Controllers
         }
 
         public IActionResult TeamMessages(int teamId)
-        {
+        {            
             IEnumerable<TeamMessageViewModel> model = _teamService.GetTeamMessages(teamId);
 
             return View(model);

@@ -11,6 +11,7 @@ namespace TWork.Models.Entities
         public string NAME { get; set; }
         public string DESCRIPTION { get; set; }
         public bool IS_REQUIRED { get; set; }
+        public bool IS_TEAM_OWNER { get; set; }
         public bool CAN_CREATE_TASK { get; set; }
         public bool CAN_ASSIGN_TASK { get; set; }
         public bool CAN_COMMENT { get; set; }

@@ -7,6 +7,7 @@ namespace TWork.Models.ViewModels
 {
     public class UserTeamPermissionsViewModel
     {
+        public bool IsTeamOwner { get; set; }
         public bool CanCreateTasks { get; set; }
         public bool CanAssignTasks { get; set; }
         public bool CanComment { get; set; }

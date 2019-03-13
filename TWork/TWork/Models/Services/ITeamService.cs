@@ -12,6 +12,8 @@ namespace TWork.Models.Services
         UserTeamsRolesViewModel GetUserTeams(USER user);
         TeamViewModel GetUserTeam(USER user, int teamId);
         List<OtherTeamViewModel> GetOtherTeamsByUser(USER user);
+        TeamInformationViewModel GetTeamInformation(int teamId);
+        string GetUserTeamsJsonForContext(USER user, int? activeTeamId = null);
         /// <summary>
         /// Create a message (team join request)
         /// </summary>
@@ -35,5 +37,6 @@ namespace TWork.Models.Services
         /// <returns></returns>
         bool CreateTeam(USER user, string teamName);
         bool IsTeamMember(USER user, int teamId);
+        void SaveTeamInformation(TeamInformationViewModel teamInfo);
     }
 }

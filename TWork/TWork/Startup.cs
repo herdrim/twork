@@ -67,6 +67,7 @@ namespace TWork
             #endregion
 
             services.AddTransient<IRegisterUserModelValidator, RegisterUserModelValidator>();
+            services.AddSession();
             services.AddMvc();
         }
 
@@ -90,6 +91,7 @@ namespace TWork
             });
 
             app.UseAuthentication();
+            app.UseSession();
             app.UseMvc(options =>
             options.MapRoute("default", "{controller=Home}/{action=Index}/{id?}"));
         }

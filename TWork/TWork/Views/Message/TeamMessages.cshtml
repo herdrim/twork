@@ -1,5 +1,11 @@
 ﻿@model IEnumerable<TWork.Models.ViewModels.TeamMessageViewModel>
 
+@{
+    ViewBag.Title = "TeamMessages";
+}
+
+<div class="panel-body"><h4>Team Messages</h4></div>
+<hr />
 <table class="table">
     <thead>
         <tr>
@@ -16,21 +22,22 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SendDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MessageTypeName)
-            </td>
-            <td>
-                <a class="btn btn-succes" asp-action="Content" asp-route-messageId="@item.MessageId">Show</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SendDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MessageTypeName)
+                </td>
+                <td>
+                    <a class="btn btn-succes" asp-action="Content" asp-route-messageId="@item.MessageId">Show</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
