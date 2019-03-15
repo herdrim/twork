@@ -16,5 +16,6 @@ namespace TWork.Models.Repositories
         void AddTeam(TEAM team, USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole);
         void UpdateTeamInfo(TEAM team);
         void AssignUserToTeamWithRole(USER_TEAM userTeam, USER_TEAM_ROLES userTeamRole);
+        void DeleteTeamMember(TEAM team, string userId);
     }
 }

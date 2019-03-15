@@ -1,0 +1,53 @@
+﻿@model TeamMemberViewModel
+
+
+@{
+    ViewBag.Title = "TeamMembers";
+}
+
+<div class="panel-body"><h4>Members</h4></div>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                UserName
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Roles
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Members)
+        {
+            <tr>
+                <td>
+                    @item.UserName
+                </td>
+                <td>
+                    @item.Email
+                </td>
+                <td>
+                    <ul>
+                        @foreach (RoleViewModel role in item.Roles)
+                        {
+                            <li>@role.RoleName</li>
+                        }
+                    </ul>
+                </td>
+                <td>
+                    <form asp-action="DeleteMember" asp-controller="Member" method="post" asp-route-memberId="@item.UserId" asp-route-teamId="@Model.TeamId">
+                        <input type="submit" class="btn-sm btn-danger" value="Delete member" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>    
+</table>
+
+<a class="btn btn-primary" asp-action="AddMember" asp-controller="Member" asp-route-teamId="@Model.TeamId">Invite new user</a>

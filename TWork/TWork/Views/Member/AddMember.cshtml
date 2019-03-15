@@ -1,0 +1,22 @@
+﻿@model TeamInformationViewModel
+
+@{
+    ViewBag.Title = "AddMember";
+}
+
+<div class="panel-body"><h4>Add member</h4></div>
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="AddMember" asp-route-teamId="@Model.TeamId">
+            <div class="form-group">
+                <label class="control-label">Email</label>
+                <input name="email" class="form-control" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Invite" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>

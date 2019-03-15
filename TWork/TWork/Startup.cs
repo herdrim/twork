@@ -54,6 +54,7 @@ namespace TWork
             services.AddTransient<ITeamRepository, TeamRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
+            services.AddTransient<ITaskRepository, TaskRepository>();
 
             #endregion
 

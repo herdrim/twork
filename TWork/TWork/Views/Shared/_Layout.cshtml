@@ -55,12 +55,12 @@
     </script>
     <title>@ViewBag.Title</title>
 </head>
-<body onload="getTeams()">
+<body> @*onload="getTeams()">*@
     @if (!String.IsNullOrEmpty(User.Identity.Name))
     {
         <a class="btn btn-danger" asp-action="Logout" asp-controller="Account">Wyloguj</a>
     }
-    <select id="teamCtx" onchange="setContextToSession()"></select>
+    @*<select id="teamCtx" onchange="setContextToSession()"></select>*@
 
     <div class="marg">@RenderBody()</div>
 

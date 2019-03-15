@@ -56,5 +56,12 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.TEAMs.Update(team);
             _ctx.SaveChanges();
         }
+
+        public void DeleteTeamMember(TEAM team, string userId)
+        {
+            _ctx.USERS_TEAMs.RemoveRange(_ctx.USERS_TEAMs.Where(x => x.TEAM_ID == team.ID && x.USER_ID == userId));
+            _ctx.USER_TEAM_ROLEs.RemoveRange(_ctx.USER_TEAM_ROLEs.Where(x => x.TEAM_ID == team.ID && x.USER_ID == userId));
+            _ctx.SaveChanges();
+        }
     }
 }

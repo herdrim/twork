@@ -17,14 +17,18 @@ namespace TWork.Models.Services.Concrete
         IMessageRepository _messageRepository;
         IRoleService _roleService;
         IUserRepository _userRepository;
+        ITaskRepository _taskRepository;
+        IMessageService _messageService;
 
-        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService, IUserRepository userRepository)
+        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService, IUserRepository userRepository, ITaskRepository taskRepository, IMessageService messageService)
         {
             _teamRepository = teamRepository;
             _roleRepository = roleRepository;
             _messageRepository = messageRepository;
             _roleService = roleService;
             _userRepository = userRepository;
+            _taskRepository = taskRepository;
+            _messageService = messageService;
         }
 
         public List<OtherTeamViewModel> GetOtherTeamsByUser(USER user)
@@ -219,6 +223,68 @@ namespace TWork.Models.Services.Concrete
             {
                 team.NAME = teamInfo.TeamName;
                 _teamRepository.UpdateTeamInfo(team);
+            }
+        }
+
+        public TeamMemberViewModel GetTeamMembers(int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TeamMemberViewModel teamMembers = new TeamMemberViewModel();
+            if (team != null)
+            {
+                var users = team.USERS_TEAMs.Select(x => x.USER);
+                teamMembers.TeamId = team.ID;
+                teamMembers.Members = new List<MemberViewModel>();
+
+                foreach (USER u in users)
+                {
+                    MemberViewModel member = new MemberViewModel
+                    {
+                        UserId = u.Id,
+                        UserName = u.UserName,
+                        Email = u.Email,                        
+                        Roles = u.USER_TEAM_ROLEs.Where(x => x.TEAM_ID == teamId).Select(x => 
+                            new RoleViewModel
+                            {
+                                RoleId = x.ROLE.ID,
+                                RoleName = x.ROLE.NAME,
+                                RoleDescription = x.ROLE.DESCRIPTION
+                            }).ToList()
+                    };
+
+                    teamMembers.Members.Add(member);
+                }                
+            }
+
+            return teamMembers;
+        }
+
+        public void RemoveMember(int teamId, string userId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            if (team != null)
+            {
+                _teamRepository.DeleteTeamMember(team, userId);
+                var tasks = _taskRepository.GetTasksByUserTeam(userId, team.ID);
+                foreach (var t in tasks)
+                {
+                    t.USER = null;
+                }
+                _taskRepository.UpdateTasks(tasks);
+            }
+        }
+
+        public async Task InviteUserToTeam(int teamId, string email)
+        {
+            USER user = await _userRepository.GetUserByEmail(email);
+            
+            if (user != null && !IsTeamMember(user, teamId))
+            {
+                // TO DO OBSŁUŻYĆ ZAPRASZANIE DO ZESPOŁU
+
+                //TEAM team = _teamRepository.GetTeamById(teamId);
+                //string message = "Zostałeś zaproszony do zespołu " + team.NAME + "<br/>"
+                //_messageService.CreateNewMessageForUser(user.Id, null,  , MessageTypeNames.INFO);
             }
         }
     }

@@ -19,7 +19,7 @@
             @Html.DisplayNameFor(model => model.MembersCount)
         </dt>
         <dd class="col-sm-10">
-            <a asp-controller="TeamMember" asp-action="Index" asp-route-teamId="@Model.Id">@Model.MembersCount</a>
+            <a asp-controller="Member" asp-action="Index" asp-route-teamId="@Model.Id">@Model.MembersCount</a>
         </dd>
         <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.TaskCount)
