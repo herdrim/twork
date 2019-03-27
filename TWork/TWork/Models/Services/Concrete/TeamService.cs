@@ -274,17 +274,16 @@ namespace TWork.Models.Services.Concrete
             }
         }
 
-        public async Task InviteUserToTeam(int teamId, string email)
+        public async Task InviteUserToTeam(USER sender, int teamId, string email)
         {
             USER user = await _userRepository.GetUserByEmail(email);
             
             if (user != null && !IsTeamMember(user, teamId))
             {
-                // TO DO OBSŁUŻYĆ ZAPRASZANIE DO ZESPOŁU
-
-                //TEAM team = _teamRepository.GetTeamById(teamId);
-                //string message = "Zostałeś zaproszony do zespołu " + team.NAME + "<br/>"
-                //_messageService.CreateNewMessageForUser(user.Id, null,  , MessageTypeNames.INFO);
+                TEAM team = _teamRepository.GetTeamById(teamId);
+                string message = "Zostałeś zaproszony do zespołu " + team.NAME + "<br/><form action='/Team/AcceptInvite' method='post'><input type='hidden' name='teamId' value='" + team.ID + "'/><input type='submit' value='Dołącz'/></form>";
+                await _messageService.CreateNewMessageForUser(user.Id, sender.Id, message, team, MessageTypeNames.INVITATION);
+                
             }
         }
     }

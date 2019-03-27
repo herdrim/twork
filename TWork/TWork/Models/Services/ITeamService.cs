@@ -40,6 +40,6 @@ namespace TWork.Models.Services
         bool IsTeamMember(USER user, int teamId);
         void SaveTeamInformation(TeamInformationViewModel teamInfo);
         void RemoveMember(int teamId, string userId);
-        Task InviteUserToTeam(int teamId, string email);
+        Task InviteUserToTeam(USER sender, int teamId, string email);
     }
 }

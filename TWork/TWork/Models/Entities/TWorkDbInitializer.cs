@@ -96,8 +96,12 @@ namespace TWork.Models.Entities
                 {
                     NAME = "INFO"
                 };
+                MESSAGE_TYPE msgType3 = new MESSAGE_TYPE
+                {
+                    NAME = "INVITATION"
+                };
 
-                ctx.MESSAGE_TYPEs.AddRange(msgType1, msgType2);
+                ctx.MESSAGE_TYPEs.AddRange(msgType1, msgType2, msgType3);
 
                 ctx.SaveChanges();
             }

@@ -76,5 +76,22 @@ namespace TWork.Controllers
 
             return RedirectToAction("Index");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> AcceptInvite(int teamId)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            USER sender = null;
+            if (_messageService.IsUserInvitedToTeam(user, teamId, out sender))
+            {
+                bool isAssigned = await _userService.AssignUserToTeamWithBasicRole(user.Id, sender.Id, teamId);
+                if (isAssigned)
+                {
+                    return RedirectToAction("MyMessages", "Message");
+                }
+            }
+
+            return RedirectToAction("AccessDenied", "Account");
+        }
     }
 }

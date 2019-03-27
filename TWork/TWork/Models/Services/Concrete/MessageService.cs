@@ -108,7 +108,7 @@ namespace TWork.Models.Services.Concrete
             }
         }
 
-        public async Task CreateNewMessageForUser(string userToId, string userFromId, string content, string messageTypeName = null)
+        public async Task CreateNewMessageForUser(string userToId, string userFromId, string content, TEAM team = null, string messageTypeName = null)
         {
             USER userFrom = null;
             MESSAGE_TYPE messageType = null;
@@ -127,6 +127,7 @@ namespace TWork.Models.Services.Concrete
                 message.MESSAGE_TYPE = messageType ?? _messageRepository.GetMessageTypeByName(MessageTypeNames.INFO);
                 message.USER_FROM = userFrom;
                 message.SEND_DATE = DateTime.Now;
+                message.TEAM = team;
                 _messageRepository.AddMessage(message);
             }
 
@@ -139,6 +140,27 @@ namespace TWork.Models.Services.Concrete
             {
                 _messageRepository.DeleteMessage(message);
             }
+        }
+
+        public bool IsUserInvitedToTeam(USER user, int teamId, out USER sender)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            sender = null;
+            if (team != null)
+            {
+                var messages = _messageRepository.GetMessagesToUser(user, MessageTypeNames.INVITATION);
+                if (messages != null)
+                {
+                    var teamInvitations = messages.Where(x => x.TEAM_ID == teamId);
+                    if(teamInvitations != null)
+                    {
+                        sender = teamInvitations.FirstOrDefault().USER_FROM;
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
         }
     }
 }

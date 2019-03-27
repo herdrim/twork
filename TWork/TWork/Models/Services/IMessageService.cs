@@ -13,7 +13,8 @@ namespace TWork.Models.Services
         MessageViewModel GetMessageToRead(int messageId);
         Task<IEnumerable<MessageViewModel>> GetMessagesToUser(string userId);
         Task RemoveTeamJoinRequestByUserFrom(string userId, int teamId);
-        Task CreateNewMessageForUser(string userToId, string userFromId, string content, string messageTypeName = null);
+        Task CreateNewMessageForUser(string userToId, string userFromId, string content, TEAM team = null, string messageTypeName = null);
         void DeleteMessage(int messageId);
+        bool IsUserInvitedToTeam(USER user, int teamId, out USER sender);
     }
 }

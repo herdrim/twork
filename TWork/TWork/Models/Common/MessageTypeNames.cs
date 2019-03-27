@@ -9,5 +9,6 @@ namespace TWork.Models.Common
     {
         public const string TEAM_JOIN_REQUEST = "TEAM_JOIN_REQUEST";
         public const string INFO = "INFO";
+        public const string INVITATION = "INVITATION";
     }
 }

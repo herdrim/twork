@@ -47,7 +47,7 @@ namespace TWork.Controllers
         }
 
 
-        public async Task<IActionResult> AddMember(int teamId)
+        public async Task<IActionResult> InviteUser(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_teamService.CheckPermissionToManageUsers(user, teamId))
@@ -60,14 +60,14 @@ namespace TWork.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddMemeber(int teamId, string email)
+        public async Task<IActionResult> SendInvitation(int teamId, string email)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_teamService.CheckPermissionToManageUsers(user, teamId))
             {
                 if (!String.IsNullOrEmpty(email))
                 {
-                    await _teamService.InviteUserToTeam(teamId, email);
+                    await _teamService.InviteUserToTeam(user, teamId, email);
                     return RedirectToAction("Index", new { teamId = teamId });
                 }
                 else

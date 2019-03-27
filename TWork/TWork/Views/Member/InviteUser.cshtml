@@ -9,7 +9,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="AddMember" asp-route-teamId="@Model.TeamId">
+        <form asp-action="SendInvitation" method="post" asp-route-teamId="@Model.TeamId">
             <div class="form-group">
                 <label class="control-label">Email</label>
                 <input name="email" class="form-control" />
