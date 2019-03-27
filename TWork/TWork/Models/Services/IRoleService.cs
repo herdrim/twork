@@ -10,5 +10,6 @@ namespace TWork.Models.Services
     public interface IRoleService
     {
         UserTeamPermissionsViewModel GetPermissionsForUserTeam(USER user, int teamId);
+        List<TeamRoleViewModel> GetRolesByTeam(int teamId);
     }
 }

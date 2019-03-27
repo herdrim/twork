@@ -44,5 +44,31 @@ namespace TWork.Models.Services.Concrete
 
             return userTeamPermissions;
         }
+
+        public List<TeamRoleViewModel> GetRolesByTeam(int teamId)
+        {            
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            List<TeamRoleViewModel> teamRoles = new List<TeamRoleViewModel>();
+            if (team != null)
+            {
+                var roles = _roleRepository.GetRolesByTeam(team);
+                if (roles != null)
+                {
+                    foreach(var role in roles)
+                    {
+                        int usersCount = _roleRepository.GetUsersByTeamRole(role, team).Count();
+                        TeamRoleViewModel teamRole = new TeamRoleViewModel
+                        {
+                            RoleId = role.ID,
+                            RoleName = role.NAME,
+                            UsersInRoleCount = usersCount
+                        };
+                        teamRoles.Add(teamRole);
+                    }
+                }
+            }
+
+            return teamRoles;
+        }
     }
 }

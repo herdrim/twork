@@ -11,5 +11,7 @@ namespace TWork.Models.Repositories
         List<ROLE> GetRolesByUserTeam(USER user, TEAM team);
         ROLE GetRoleByName(string name);
         ROLE GetBasicRole();
+        IEnumerable<ROLE> GetRolesByTeam(TEAM team);
+        IEnumerable<USER> GetUsersByTeamRole(ROLE role, TEAM team);
     }
 }

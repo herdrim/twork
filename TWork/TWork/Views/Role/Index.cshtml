@@ -1,0 +1,42 @@
+﻿@model List<TeamRoleViewModel>
+
+
+@{
+    ViewBag.Title = "TeamRoles";
+}
+
+<div class="panel-body"><h4>Roles</h4></div>
+<hr />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Role Name
+            </th>
+            <th>
+                Members Count
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @item.RoleName
+                </td>
+                <td>
+                    @item.UsersInRoleCount
+                </td>
+                <td>
+                    <form asp-action="EditRole" asp-controller="Role" method="get" asp-route-roleId="@item.RoleId">
+                        <input type="submit" class="btn-sm btn-primary" value="Edit role" />
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" asp-action="AddRole" asp-controller="Role">Add role</a>

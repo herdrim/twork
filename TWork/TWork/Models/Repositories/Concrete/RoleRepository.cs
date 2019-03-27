@@ -42,6 +42,12 @@ namespace TWork.Models.Repositories.Concrete
 
         public ROLE GetRoleByName(string name)
             => _ctx.ROLEs.FirstOrDefault(x => x.NAME == name);
+
+        public IEnumerable<ROLE> GetRolesByTeam(TEAM team)
+            => _ctx.USER_TEAM_ROLEs.Where(x => x.TEAM == team).Select(x => x.ROLE).Distinct();
+
+        public IEnumerable<USER> GetUsersByTeamRole(ROLE role, TEAM team)
+            => _ctx.USER_TEAM_ROLEs.Where(x => x.TEAM == team && x.ROLE == role).Select(x => x.USER);
         
     }
 }
