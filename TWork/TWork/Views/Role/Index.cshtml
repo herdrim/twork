@@ -1,4 +1,4 @@
-﻿@model List<TeamRoleViewModel>
+﻿@model TeamRoleViewModel
 
 
 @{
@@ -20,7 +20,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Roles)
         {
             <tr>
                 <td>
@@ -30,13 +30,11 @@
                     @item.UsersInRoleCount
                 </td>
                 <td>
-                    <form asp-action="EditRole" asp-controller="Role" method="get" asp-route-roleId="@item.RoleId">
-                        <input type="submit" class="btn-sm btn-primary" value="Edit role" />
-                    </form>
+                    <a class="btn btn-primary" asp-action="EditRole" asp-controller="Role" asp-route-roleId="@item.RoleId" asp-route-teamId="@Model.TeamId">Edit</a>
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a class="btn btn-primary" asp-action="AddRole" asp-controller="Role">Add role</a>
+<a class="btn btn-primary" asp-action="CreateRole" asp-controller="Role" asp-route-teamId="@Model.TeamId">Add role</a>

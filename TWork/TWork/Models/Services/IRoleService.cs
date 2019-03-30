@@ -10,6 +10,10 @@ namespace TWork.Models.Services
     public interface IRoleService
     {
         UserTeamPermissionsViewModel GetPermissionsForUserTeam(USER user, int teamId);
-        List<TeamRoleViewModel> GetRolesByTeam(int teamId);
+        TeamRoleViewModel GetRolesByTeam(int teamId);
+        void CreateRole(RoleCreateViewModel roleModel);
+        bool IsRoleExist(string roleName, int? exceptRoleId = null);
+        RoleEditModel GetRoleWithMembersForEdit(int roleId, int teamId);
+        void SaveEditedRole(RoleEditModel editModel);
     }
 }

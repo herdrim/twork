@@ -33,6 +33,9 @@ namespace TWork.Models.Repositories.Concrete
             => await _userManager.GetUserAsync(user);
 
         public async Task<USER> GetUserById(string userId)
-            => await _userManager.FindByIdAsync(userId);        
+            => await _userManager.FindByIdAsync(userId);
+
+        public IEnumerable<USER> GetUsersByTeam(TEAM team)
+            => _ctx.USERS_TEAMs.Where(x => x.TEAM == team).Select(x => x.USER);
     }
 }

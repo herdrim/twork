@@ -8,10 +8,15 @@ namespace TWork.Models.Repositories
 {
     public interface IRoleRepository
     {
+        ROLE GetRoleById(int roleId);
         List<ROLE> GetRolesByUserTeam(USER user, TEAM team);
         ROLE GetRoleByName(string name);
         ROLE GetBasicRole();
         IEnumerable<ROLE> GetRolesByTeam(TEAM team);
         IEnumerable<USER> GetUsersByTeamRole(ROLE role, TEAM team);
+        void AddRole(ROLE role);
+        void UpdateRole(ROLE role);
+        void AddUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles);
+        void RemoveUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles);
     }
 }

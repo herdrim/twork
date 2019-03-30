@@ -14,5 +14,6 @@ namespace TWork.Models.Repositories
         Task<USER> GetUserByUserName(string userName);
         Task<USER> GetUserByContext(ClaimsPrincipal user);
         Task<USER> GetUserById(string userId);
+        IEnumerable<USER> GetUsersByTeam(TEAM team);
     }
 }

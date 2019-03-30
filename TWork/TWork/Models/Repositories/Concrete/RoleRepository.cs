@@ -35,6 +35,9 @@ namespace TWork.Models.Repositories.Concrete
             return roles;
         }
 
+        public ROLE GetRoleById(int roleId)
+            => _ctx.ROLEs.FirstOrDefault(x => x.ID == roleId);
+
         public ROLE GetBasicRole()
         {
             return _ctx.ROLEs.FirstOrDefault(x => x.NAME == "Member");
@@ -44,10 +47,33 @@ namespace TWork.Models.Repositories.Concrete
             => _ctx.ROLEs.FirstOrDefault(x => x.NAME == name);
 
         public IEnumerable<ROLE> GetRolesByTeam(TEAM team)
-            => _ctx.USER_TEAM_ROLEs.Where(x => x.TEAM == team).Select(x => x.ROLE).Distinct();
+            => _ctx.ROLEs.Where(x => x.TEAM == team || x.TEAM == null);
 
         public IEnumerable<USER> GetUsersByTeamRole(ROLE role, TEAM team)
             => _ctx.USER_TEAM_ROLEs.Where(x => x.TEAM == team && x.ROLE == role).Select(x => x.USER);
-        
+
+        public void AddRole(ROLE role)
+        {
+            _ctx.ROLEs.Add(role);
+            _ctx.SaveChanges();
+        }
+
+        public void UpdateRole(ROLE role)
+        {
+            _ctx.ROLEs.Update(role);
+            _ctx.SaveChanges();
+        }
+
+        public void AddUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles)
+        {
+            _ctx.USER_TEAM_ROLEs.AddRange(userTeamRoles);
+            _ctx.SaveChanges();
+        }
+
+        public void RemoveUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles)
+        {
+            _ctx.USER_TEAM_ROLEs.RemoveRange(userTeamRoles);
+            _ctx.SaveChanges();
+        }
     }
 }
