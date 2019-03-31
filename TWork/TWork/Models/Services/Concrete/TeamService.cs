@@ -189,7 +189,7 @@ namespace TWork.Models.Services.Concrete
         {            
             TeamViewModel teamViewModel = new TeamViewModel();
 
-            if (IsTeamMember(user, teamId))
+            if (_teamRepository.IsTeamMember(user, teamId))
             {
                 TEAM team = _teamRepository.GetTeamById(teamId);
                 teamViewModel.Id = team.ID;
@@ -199,15 +199,6 @@ namespace TWork.Models.Services.Concrete
             }
 
             return teamViewModel;
-        }
-
-        public bool IsTeamMember(USER user, int teamId)
-        {
-            TEAM team = _teamRepository.GetTeamById(teamId);
-            if (team.USERS_TEAMs.FirstOrDefault(x => x.USER == user) != null)
-                return true;
-            else
-                return false;
         }
 
         public TeamInformationViewModel GetTeamInformation(int teamId)
@@ -278,7 +269,7 @@ namespace TWork.Models.Services.Concrete
         {
             USER user = await _userRepository.GetUserByEmail(email);
             
-            if (user != null && !IsTeamMember(user, teamId))
+            if (user != null && !_teamRepository.IsTeamMember(user, teamId))
             {
                 TEAM team = _teamRepository.GetTeamById(teamId);
                 string message = "Zostałeś zaproszony do zespołu " + team.NAME + "<br/><form action='/Team/AcceptInvite' method='post'><input type='hidden' name='teamId' value='" + team.ID + "'/><input type='submit' value='Dołącz'/></form>";

@@ -16,5 +16,6 @@ namespace TWork.Models.ViewModels
         public int RoleId { get; set; }
         public string RoleName { get; set; }
         public int UsersInRoleCount { get; set; }
+        public bool IsDefaultRole { get; set; }
     }
 }

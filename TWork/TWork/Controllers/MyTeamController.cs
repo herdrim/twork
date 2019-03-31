@@ -21,14 +21,16 @@ namespace TWork.Controllers
         IUserService _userService;
         IMessageService _messageService;
         IRoleService _roleService;
+        ITeamRepository _teamRepository;
 
-        public MyTeamController(ITeamService teamService, IUserRepository userRepository, IUserService userService, IMessageService messageService, IRoleService roleService)
+        public MyTeamController(ITeamService teamService, IUserRepository userRepository, IUserService userService, IMessageService messageService, IRoleService roleService, ITeamRepository teamRepository)
         {
             _teamService = teamService;
             _userRepository = userRepository;
             _userService = userService;
             _messageService = messageService;
             _roleService = roleService;
+            _teamRepository = teamRepository;
         }
 
         public async Task<IActionResult> Index()
@@ -42,7 +44,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> Details(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.IsTeamMember(user, teamId))
+            if (_teamRepository.IsTeamMember(user, teamId))
             {
                 HttpContext.Session.Remove(SessionKeys.TEAM_ID_CONTEXT);
                 HttpContext.Session.SetInt32(SessionKeys.TEAM_ID_CONTEXT, teamId);

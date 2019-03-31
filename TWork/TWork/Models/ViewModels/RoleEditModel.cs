@@ -22,15 +22,5 @@ namespace TWork.Models.ViewModels
         public bool CanComment { get; set; }
         [Required]
         public bool CanManageUsers { get; set; }
-        public IEnumerable<RoleEditMemberModel> RoleMembers { get; set; }
-        public IEnumerable<RoleEditMemberModel> OtherTeamMembers { get; set; }
-
-    }
-
-    public class RoleEditMemberModel
-    {
-        public string MemberId { get; set; }
-        public string MemberName { get; set; }
-        public bool IsMember { get; set; }
     }
 }

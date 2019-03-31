@@ -63,5 +63,14 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.USER_TEAM_ROLEs.RemoveRange(_ctx.USER_TEAM_ROLEs.Where(x => x.TEAM_ID == team.ID && x.USER_ID == userId));
             _ctx.SaveChanges();
         }
+
+        public bool IsTeamMember(USER user, int teamId)
+        {
+            TEAM team = GetTeamById(teamId);
+            if (team.USERS_TEAMs.FirstOrDefault(x => x.USER == user) != null)
+                return true;
+            else
+                return false;
+        }
     }
 }

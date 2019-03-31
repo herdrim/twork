@@ -64,9 +64,22 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.SaveChanges();
         }
 
-        public void AddUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles)
+        public void RemoveRole(ROLE role)
         {
-            _ctx.USER_TEAM_ROLEs.AddRange(userTeamRoles);
+            _ctx.ROLEs.Remove(role);
+            _ctx.SaveChanges();
+        }
+
+        public void UpdateUserTeamRolesRange(IEnumerable<USER_TEAM_ROLES> userTeamRolesRange)
+        {
+            _ctx.USER_TEAM_ROLEs.UpdateRange(userTeamRolesRange);
+            _ctx.SaveChanges();
+        }
+
+        public void AddAndDeleteUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRolesToAdd, IEnumerable<USER_TEAM_ROLES> userTeamRolesToDelete)
+        {
+            _ctx.USER_TEAM_ROLEs.AddRange(userTeamRolesToAdd);
+            _ctx.USER_TEAM_ROLEs.RemoveRange(userTeamRolesToDelete);
             _ctx.SaveChanges();
         }
 

@@ -14,17 +14,19 @@ namespace TWork.Controllers
     {
         IUserRepository _userRepository;
         ITeamService _teamService;
+        ITeamRepository _teamRepository;
 
-        public MemberController(IUserRepository userRepository, ITeamService teamService)
+        public MemberController(IUserRepository userRepository, ITeamService teamService, ITeamRepository teamRepository)
         {
             _userRepository = userRepository;
             _teamService = teamService;
+            _teamRepository = teamRepository;
         }
 
         public async Task<IActionResult> Index(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.IsTeamMember(user, teamId))
+            if (_teamRepository.IsTeamMember(user, teamId))
             {
                 TeamMemberViewModel model = _teamService.GetTeamMembers(teamId);
                 return View(model);

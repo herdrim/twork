@@ -77,7 +77,7 @@ namespace TWork.Controllers
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_teamService.CheckPermissionToManageUsers(user, teamId))
             {
-                return View(_roleService.GetRoleWithMembersForEdit(roleId, teamId));
+                return View(_roleService.GetRoleForEdit(roleId, teamId));
             }
             return RedirectToAction("AccessDenied", "Account");
         }
@@ -101,6 +101,44 @@ namespace TWork.Controllers
                     }
                 }
                 return View(editModel);
+            }
+            return RedirectToAction("AccessDenied", "Account");
+        }
+
+        public async Task<IActionResult> AssignRole(int teamId, int roleId)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            {
+                RoleAssignViewModel model = _roleService.GetMembersToAssign(teamId, roleId);
+                if (model != null)
+                    return View(model);
+                else
+                    return RedirectToAction("Index", new { teamId = teamId });
+            }
+            return RedirectToAction("AccessDenied", "Account");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AssignRole(RoleAssignInputModel roleAssignModel)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamService.CheckPermissionToManageUsers(user, roleAssignModel.TeamId))
+            {
+                await _roleService.AssignUsersToRoleAsync(roleAssignModel);
+                return RedirectToAction("Index", new { teamId = roleAssignModel.TeamId });
+            }
+            return RedirectToAction("AccessDenied", "Account");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(int roleId, int teamId)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            {
+                _roleService.DeleteRole(roleId, teamId);
+                return RedirectToAction("Index", new { teamId = teamId });
             }
             return RedirectToAction("AccessDenied", "Account");
         }

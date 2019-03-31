@@ -13,6 +13,7 @@
         <tr>
             <th>Team</th>
             <th>Roles</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -27,6 +28,9 @@
                             <li>@role.RoleName</li>
                         }
                     </ul>
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="Index" asp-controller="Task" asp-route-teamId="@team.TeamId">Tasks</a>
                 </td>
             </tr>
         }

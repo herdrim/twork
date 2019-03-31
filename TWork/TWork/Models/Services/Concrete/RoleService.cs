@@ -65,7 +65,8 @@ namespace TWork.Models.Services.Concrete
                         {                            
                             RoleId = role.ID,
                             RoleName = role.NAME,
-                            UsersInRoleCount = usersCount
+                            UsersInRoleCount = usersCount,
+                            IsDefaultRole = role.TEAM == null ? true : false
                         };
                         teamRoles.Roles.Add(teamRole);
                     }
@@ -108,7 +109,7 @@ namespace TWork.Models.Services.Concrete
                 return false;
         }
 
-        public RoleEditModel GetRoleWithMembersForEdit(int roleId, int teamId)
+        public RoleEditModel GetRoleForEdit(int roleId, int teamId)
         {
             ROLE role = _roleRepository.GetRoleById(roleId);
             TEAM team = _teamRepository.GetTeamById(teamId);
@@ -125,22 +126,8 @@ namespace TWork.Models.Services.Concrete
                     CanAssignTask = role.CAN_ASSIGN_TASK,
                     CanComment = role.CAN_COMMENT,
                     CanCreateTask = role.CAN_CREATE_TASK,
-                    CanManageUsers = role.CAN_MANAGE_USERS,
-                    RoleMembers = new List<RoleEditMemberModel>(),
-                    OtherTeamMembers = new List<RoleEditMemberModel>()
+                    CanManageUsers = role.CAN_MANAGE_USERS
                 };
-
-                var roleMembers = _roleRepository.GetUsersByTeamRole(role, team);
-                var teamMembers = _userRepository.GetUsersByTeam(team);
-                if (teamMembers != null)
-                {
-                    if (roleMembers != null)
-                    {
-                        teamMembers = teamMembers.Except(roleMembers);
-                        roleModel.RoleMembers = roleMembers.Select(x => new RoleEditMemberModel { MemberName = x.UserName, MemberId = x.Id, IsMember = true });
-                    }
-                    roleModel.OtherTeamMembers = teamMembers.Select(x => new RoleEditMemberModel { MemberName = x.UserName, MemberId = x.Id });
-                }
             }
 
             return roleModel;
@@ -162,35 +149,104 @@ namespace TWork.Models.Services.Concrete
                     role.CAN_MANAGE_USERS = editModel.CanManageUsers;
                     _roleRepository.UpdateRole(role);
                 }
-
-                if (editModel.OtherTeamMembers != null)
-                {
-                    IEnumerable<UserTeamRoleModel> usersToAdd = editModel.OtherTeamMembers
-                            .Where(x => x.IsMember)
-                            .Select(x => new UserTeamRoleModel { UserId = x.MemberId, RoleId = editModel.RoleId, TeamId = team.ID });
-                    AddUsersToRole(usersToAdd);
-                }
-                if (editModel.RoleMembers != null)
-                {
-                    IEnumerable<UserTeamRoleModel> usersToDelete =
-                        editModel.RoleMembers
-                            .Where(x => !x.IsMember)
-                            .Select(x => new UserTeamRoleModel { UserId = x.MemberId, RoleId = editModel.RoleId, TeamId = team.ID });
-                    RemoveUsersFromRole(usersToDelete);
-                }
             }
         }
 
-        private void AddUsersToRole(IEnumerable<UserTeamRoleModel> userTeamRoleModel)
+        public void DeleteRole(int roleId, int teamId)
         {
-            IEnumerable<USER_TEAM_ROLES> userTeamRoles = userTeamRoleModel.Select(x => new USER_TEAM_ROLES { USER_ID = x.UserId, ROLE_ID = x.RoleId, TEAM_ID = x.TeamId });
-            _roleRepository.AddUserTeamRoles(userTeamRoles);
+            ROLE role = _roleRepository.GetRoleById(roleId);
+            TEAM team = _teamRepository.GetTeamById(teamId);
+
+            if (team != null && role != null && role.TEAM != null && role.TEAM == team)
+            {
+                ROLE basicRole = _roleRepository.GetBasicRole();
+                var usersInRole = _roleRepository.GetUsersByTeamRole(role, team);
+                List<USER_TEAM_ROLES> userTeamRolesToUpdate = new List<USER_TEAM_ROLES>();
+                List<USER_TEAM_ROLES> userTeamRolesToDelete = new List<USER_TEAM_ROLES>();
+                foreach (var userInRole in usersInRole)
+                {
+                    bool deleteUserRole = false;
+                    if (userInRole.USER_TEAM_ROLEs.Where(x => x.ROLE != role && x.TEAM == team).FirstOrDefault() != null)
+                        deleteUserRole = true;
+
+                    List<USER_TEAM_ROLES> userRoles = userInRole.USER_TEAM_ROLEs.Where(x => x.ROLE == role && x.TEAM == team).ToList();
+                    if (!deleteUserRole)
+                    {
+                        foreach (var ur in userRoles)
+                        {
+                            ur.ROLE = basicRole;
+                        }
+                        userTeamRolesToUpdate.AddRange(userRoles);
+                    }
+                    else
+                        userTeamRolesToDelete.AddRange(userRoles);
+                }
+                _roleRepository.UpdateUserTeamRolesRange(userTeamRolesToUpdate);
+                _roleRepository.RemoveUserTeamRoles(userTeamRolesToDelete);
+
+                _roleRepository.RemoveRole(role);
+            }
         }
 
-        private void RemoveUsersFromRole(IEnumerable<UserTeamRoleModel> userTeamRoleModel)
+        public RoleAssignViewModel GetMembersToAssign(int teamId, int roleId)
         {
-            IEnumerable<USER_TEAM_ROLES> userTeamRoles = userTeamRoleModel.Select(x => new USER_TEAM_ROLES { USER_ID = x.UserId, ROLE_ID = x.RoleId, TEAM_ID = x.TeamId });
-            _roleRepository.RemoveUserTeamRoles(userTeamRoles);
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            ROLE role = _roleRepository.GetRoleById(roleId);
+            
+            if (team != null && role != null)
+            {                
+                var roleMembers = _roleRepository.GetUsersByTeamRole(role, team);
+                var teamOtherMembers = _userRepository.GetUsersByTeam(team).Except(roleMembers);
+                RoleAssignViewModel roleAssignModel = new RoleAssignViewModel
+                {
+                    RoleId = role.ID,
+                    RoleName = role.NAME,
+                    TeamId = team.ID,
+                    RoleMembers = roleMembers.Select(x => new RoleAssignMemberModel { MemberId = x.Id, MemberName = x.UserName }),
+                    OtherTeamMembers = teamOtherMembers.Select(x => new RoleAssignMemberModel { MemberId = x.Id, MemberName = x.UserName })
+                };
+
+                return roleAssignModel;
+            }
+
+            return null;
+        }
+
+        public async Task AssignUsersToRoleAsync(RoleAssignInputModel roleAssignModel)
+        {
+            TEAM team = _teamRepository.GetTeamById(roleAssignModel.TeamId);
+            ROLE role = _roleRepository.GetRoleById(roleAssignModel.RoleId);
+
+            if (team != null && role != null)
+            {
+                List<USER_TEAM_ROLES> usersToRemove = new List<USER_TEAM_ROLES>();
+                if (roleAssignModel.IdsToRemove != null)
+                {                    
+                    foreach (string idToRemove in roleAssignModel.IdsToRemove)
+                    {
+                        USER user = await _userRepository.GetUserById(idToRemove);
+                        if (user != null && _teamRepository.IsTeamMember(user, team.ID))
+                        {
+                            usersToRemove.Add(user.USER_TEAM_ROLEs.FirstOrDefault(x => x.ROLE == role && x.TEAM == team));
+                        }
+                    }
+                }
+
+                List<USER_TEAM_ROLES> usersToAdd = new List<USER_TEAM_ROLES>();
+                if (roleAssignModel.IdsToAdd != null)
+                {
+                    foreach (string idToAdd in roleAssignModel.IdsToAdd)
+                    {
+                        USER user = await _userRepository.GetUserById(idToAdd);
+                        if (user != null && _teamRepository.IsTeamMember(user, team.ID))
+                        {
+                            usersToAdd.Add(new USER_TEAM_ROLES { ROLE = role, TEAM = team, USER = user });
+                        }
+                    }                    
+                }
+
+                _roleRepository.AddAndDeleteUserTeamRoles(usersToAdd, usersToRemove);
+            }
         }
     }
 }

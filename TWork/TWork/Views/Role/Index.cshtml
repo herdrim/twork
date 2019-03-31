@@ -30,7 +30,14 @@
                     @item.UsersInRoleCount
                 </td>
                 <td>
-                    <a class="btn btn-primary" asp-action="EditRole" asp-controller="Role" asp-route-roleId="@item.RoleId" asp-route-teamId="@Model.TeamId">Edit</a>
+                    <a class="btn btn-sm btn-primary" asp-action="EditRole" asp-controller="Role" asp-route-roleId="@item.RoleId" asp-route-teamId="@Model.TeamId">Edit</a>
+                    <a class="btn btn-sm btn-primary" asp-action="AssignRole" asp-controller="Role" asp-route-roleId="@item.RoleId" asp-route-teamId="@Model.TeamId">Assign</a>
+                    @if (!item.IsDefaultRole)
+                    {
+                        <form asp-action="DeleteRole" asp-route-roleId="@item.RoleId" asp-route-teamId="@Model.TeamId" method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }

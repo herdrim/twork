@@ -36,8 +36,7 @@ namespace TWork.Models.Services
         /// <param name="user"></param>
         /// <param name="teamName"></param>
         /// <returns></returns>
-        bool CreateTeam(USER user, string teamName);
-        bool IsTeamMember(USER user, int teamId);
+        bool CreateTeam(USER user, string teamName);        
         void SaveTeamInformation(TeamInformationViewModel teamInfo);
         void RemoveMember(int teamId, string userId);
         Task InviteUserToTeam(USER sender, int teamId, string email);

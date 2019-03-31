@@ -16,7 +16,9 @@ namespace TWork.Models.Repositories
         IEnumerable<USER> GetUsersByTeamRole(ROLE role, TEAM team);
         void AddRole(ROLE role);
         void UpdateRole(ROLE role);
-        void AddUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles);
+        void AddAndDeleteUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRolesToAdd, IEnumerable<USER_TEAM_ROLES> userTeamRolesToDelete);
         void RemoveUserTeamRoles(IEnumerable<USER_TEAM_ROLES> userTeamRoles);
+        void UpdateUserTeamRolesRange(IEnumerable<USER_TEAM_ROLES> userTeamRolesRange);
+        void RemoveRole(ROLE role);
     }
 }

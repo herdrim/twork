@@ -87,50 +87,6 @@
                     </label>
                 </div>
             }
-
-            <h6 class="bg-info panel-body">Members</h6>
-            <table class="table table-bordered table-condensed">
-                @if (Model.RoleMembers.Count() == 0)
-                {
-                    <tr><td colspan="2">No Users Are Members</td></tr>
-                }
-                else
-                {
-                    @foreach (RoleEditMemberModel member in Model.RoleMembers)
-                    {
-                        <tr>
-                            <td>@member.MemberName</td>
-                            <td>
-                                <input class="form-check-input" asp-for="@member.MemberId" readonly="readonly" hidden="hidden" value="@member.MemberId" />
-                                <input class="form-check-input" asp-for="@member.MemberName" readonly="readonly" hidden="hidden" value="@member.MemberName" />
-                                <input class="form-check-input" asp-for="@member.IsMember" />
-                            </td>
-                        </tr>
-                    }
-                }
-            </table>
-
-            <h6 class="bg-info panel-body">NonMembers</h6>
-            <table class="table table-bordered table-condensed">
-                @if (Model.OtherTeamMembers.Count() == 0)
-                {
-                    <tr><td colspan="2">All Users Are Members</td></tr>
-                }
-                else
-                {
-                    @foreach (RoleEditMemberModel nonMember in Model.OtherTeamMembers)
-                    {
-                        <tr>
-                            <td>@nonMember.MemberName</td>
-                            <td>
-                                <input class="form-check-input" asp-for="@nonMember.MemberId" readonly="readonly" hidden="hidden" value="@nonMember.MemberId" />
-                                <input class="form-check-input" asp-for="@nonMember.MemberName" readonly="readonly" hidden="hidden" value="@nonMember.MemberName" />
-                                <input class="form-check-input" asp-for="@nonMember.IsMember" />
-                            </td>
-                        </tr>
-                    }
-                }
-            </table>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
