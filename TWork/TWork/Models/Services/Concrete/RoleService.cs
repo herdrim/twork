@@ -21,32 +21,6 @@ namespace TWork.Models.Services.Concrete
             _userRepository = userRepository;
         }
 
-        public UserTeamPermissionsViewModel GetPermissionsForUserTeam(USER user, int teamId)
-        {
-            TEAM team = _teamRepository.GetTeamById(teamId);
-            UserTeamPermissionsViewModel userTeamPermissions = new UserTeamPermissionsViewModel();
-            if (team != null)
-            {
-                List<ROLE> roles = _roleRepository.GetRolesByUserTeam(user, team);               
-
-                foreach (ROLE role in roles)
-                {
-                    if (role.IS_TEAM_OWNER)                    
-                        userTeamPermissions.IsTeamOwner = true;                    
-                    if (role.CAN_ASSIGN_TASK)
-                        userTeamPermissions.CanAssignTasks = true;
-                    if (role.CAN_COMMENT)
-                        userTeamPermissions.CanComment = true;
-                    if (role.CAN_CREATE_TASK)
-                        userTeamPermissions.CanCreateTasks = true;
-                    if (role.CAN_MANAGE_USERS)
-                        userTeamPermissions.CanManageUsers = true;
-                }
-            }
-
-            return userTeamPermissions;
-        }
-
         public TeamRoleViewModel GetRolesByTeam(int teamId)
         {            
             TEAM team = _teamRepository.GetTeamById(teamId);

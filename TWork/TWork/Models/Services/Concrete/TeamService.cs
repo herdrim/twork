@@ -147,13 +147,6 @@ namespace TWork.Models.Services.Concrete
             return teamMessages;
         }
 
-        public bool CheckPermissionToManageUsers(USER user, int teamId)
-        {
-            //TEAM team = _teamRepository.GetTeamById(teamId);
-            UserTeamPermissionsViewModel userTeamPermissions = _roleService.GetPermissionsForUserTeam(user, teamId);
-            return userTeamPermissions.CanManageUsers;
-        }
-
         public bool CreateTeam(USER user, string teamName)
         {
             bool isNameFree = true;

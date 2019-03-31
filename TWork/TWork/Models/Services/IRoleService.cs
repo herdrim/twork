@@ -8,8 +8,7 @@ using TWork.Models.ViewModels;
 namespace TWork.Models.Services
 {
     public interface IRoleService
-    {
-        UserTeamPermissionsViewModel GetPermissionsForUserTeam(USER user, int teamId);
+    {        
         TeamRoleViewModel GetRolesByTeam(int teamId);
         void CreateRole(RoleCreateViewModel roleModel);
         bool IsRoleExist(string roleName, int? exceptRoleId = null);

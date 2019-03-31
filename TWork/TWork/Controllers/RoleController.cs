@@ -17,20 +17,22 @@ namespace TWork.Controllers
         IUserService _userService;
         IMessageService _messageService;
         IRoleService _roleService;
+        IPermissionService _permissionService;
 
-        public RoleController(ITeamService teamService, IUserRepository userRepository, IUserService userService, IMessageService messageService, IRoleService roleService)
+        public RoleController(ITeamService teamService, IUserRepository userRepository, IUserService userService, IMessageService messageService, IRoleService roleService, IPermissionService permissionService)
         {
             _teamService = teamService;
             _userRepository = userRepository;
             _userService = userService;
             _messageService = messageService;
             _roleService = roleService;
+            _permissionService = permissionService;
         }
 
         public async Task<IActionResult> Index(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 return View(_roleService.GetRolesByTeam(teamId));
             }
@@ -41,7 +43,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> CreateRole(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 RoleCreateViewModel model = new RoleCreateViewModel { TeamId = teamId };
                 return View(model);
@@ -53,7 +55,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> CreateRole(RoleCreateViewModel roleCreateModel)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, roleCreateModel.TeamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, roleCreateModel.TeamId))
             {
                 if (ModelState.IsValid)
                 {
@@ -75,7 +77,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> EditRole(int teamId, int roleId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 return View(_roleService.GetRoleForEdit(roleId, teamId));
             }
@@ -86,7 +88,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> EditRole(RoleEditModel editModel)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, editModel.TeamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, editModel.TeamId))
             {
                 if (ModelState.IsValid)
                 {
@@ -108,7 +110,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> AssignRole(int teamId, int roleId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 RoleAssignViewModel model = _roleService.GetMembersToAssign(teamId, roleId);
                 if (model != null)
@@ -123,7 +125,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> AssignRole(RoleAssignInputModel roleAssignModel)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, roleAssignModel.TeamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, roleAssignModel.TeamId))
             {
                 await _roleService.AssignUsersToRoleAsync(roleAssignModel);
                 return RedirectToAction("Index", new { teamId = roleAssignModel.TeamId });
@@ -135,7 +137,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> DeleteRole(int roleId, int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 _roleService.DeleteRole(roleId, teamId);
                 return RedirectToAction("Index", new { teamId = teamId });

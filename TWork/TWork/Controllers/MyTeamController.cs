@@ -22,8 +22,9 @@ namespace TWork.Controllers
         IMessageService _messageService;
         IRoleService _roleService;
         ITeamRepository _teamRepository;
+        IPermissionService _permissionService;
 
-        public MyTeamController(ITeamService teamService, IUserRepository userRepository, IUserService userService, IMessageService messageService, IRoleService roleService, ITeamRepository teamRepository)
+        public MyTeamController(ITeamService teamService, IUserRepository userRepository, IUserService userService, IMessageService messageService, IRoleService roleService, ITeamRepository teamRepository, IPermissionService permissionService)
         {
             _teamService = teamService;
             _userRepository = userRepository;
@@ -31,6 +32,7 @@ namespace TWork.Controllers
             _messageService = messageService;
             _roleService = roleService;
             _teamRepository = teamRepository;
+            _permissionService = permissionService;
         }
 
         public async Task<IActionResult> Index()
@@ -58,7 +60,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> Edit(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_roleService.GetPermissionsForUserTeam(user, teamId).IsTeamOwner)
+            if (_permissionService.GetPermissionsForUserTeam(user, teamId).IsTeamOwner)
             {
                 return View(_teamService.GetTeamInformation(teamId));
             }
@@ -70,7 +72,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> Edit(TeamInformationViewModel model)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_roleService.GetPermissionsForUserTeam(user, model.TeamId).IsTeamOwner)
+            if (_permissionService.GetPermissionsForUserTeam(user, model.TeamId).IsTeamOwner)
             {
                 _teamService.SaveTeamInformation(model);
                 return RedirectToAction("Details", new { teamId = model.TeamId });
@@ -106,7 +108,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> AcceptUserJoinRequest(string userId, int teamToJoinId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamToJoinId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamToJoinId))
             {
                 bool isAssigned = await _userService.AssignUserToTeamWithBasicRole(userId, user.Id, teamToJoinId);
                 if (isAssigned)
@@ -120,7 +122,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> CancelUserJoinRequest(string userId, int teamToJoinId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamToJoinId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamToJoinId))
             {
                 await _messageService.RemoveTeamJoinRequestByUserFrom(userId, teamToJoinId);
                 return RedirectToAction("TeamMessages", "Message", new { teamId = teamToJoinId });

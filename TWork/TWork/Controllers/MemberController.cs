@@ -15,12 +15,14 @@ namespace TWork.Controllers
         IUserRepository _userRepository;
         ITeamService _teamService;
         ITeamRepository _teamRepository;
+        IPermissionService _permissionService;
 
-        public MemberController(IUserRepository userRepository, ITeamService teamService, ITeamRepository teamRepository)
+        public MemberController(IUserRepository userRepository, ITeamService teamService, ITeamRepository teamRepository, IPermissionService permissionService)
         {
             _userRepository = userRepository;
             _teamService = teamService;
             _teamRepository = teamRepository;
+            _permissionService = permissionService;
         }
 
         public async Task<IActionResult> Index(int teamId)
@@ -39,7 +41,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> DeleteMember(int teamId, string memberId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 _teamService.RemoveMember(teamId, memberId);
                 return RedirectToAction("Index", new { teamId = teamId });
@@ -52,7 +54,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> InviteUser(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 TeamInformationViewModel model = _teamService.GetTeamInformation(teamId);
                 return View(model);
@@ -65,7 +67,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> SendInvitation(int teamId, string email)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_teamService.CheckPermissionToManageUsers(user, teamId))
+            if (_permissionService.CheckPermissionToManageUsers(user, teamId))
             {
                 if (!String.IsNullOrEmpty(email))
                 {

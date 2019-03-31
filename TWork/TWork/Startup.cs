@@ -64,6 +64,7 @@ namespace TWork
             services.AddTransient<ITeamService, TeamService>();
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IRoleService, RoleService>();
+            services.AddTransient<IPermissionService, PermissionService>();
 
             #endregion
 

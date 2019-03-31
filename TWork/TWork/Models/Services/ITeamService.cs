@@ -22,14 +22,7 @@ namespace TWork.Models.Services
         /// <param name="user">User sending the request</param>
         /// <returns></returns>
         void SendJoinRequest(int teamId, USER user);
-        IEnumerable<TeamMessageViewModel> GetTeamMessages(int teamId);
-        /// <summary>
-        /// Return true if user has permission to manage users in specified team
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="teamId"></param>
-        /// <returns></returns>
-        bool CheckPermissionToManageUsers(USER user, int teamId);
+        IEnumerable<TeamMessageViewModel> GetTeamMessages(int teamId);        
         /// <summary>
         /// Return true if name is free
         /// </summary>
