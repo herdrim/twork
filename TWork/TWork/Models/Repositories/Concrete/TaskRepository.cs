@@ -17,6 +17,12 @@ namespace TWork.Models.Repositories.Concrete
 
         public IEnumerable<TASK> GetTasksByUserTeam(string userId, int teamId)
             => _ctx.TASKs.Where(x => x.TEAM_ID == teamId && x.USER_ID == userId);
+
+        public IEnumerable<TASK> GetTasksByTeamAndStatus(TEAM team, TASK_STATUS status)
+            => _ctx.TASKs.Where(x => x.TEAM_ID == team.ID && x.TASK_STATUS == status);
+
+        public IEnumerable<TASK_STATUS> GetTaskStatusesByTeam(TEAM team)
+            => _ctx.TASKs.Where(x => x.TEAM == team).Select(x => x.TASK_STATUS);
         
 
         public void UpdateTasks(IEnumerable<TASK> tasks)

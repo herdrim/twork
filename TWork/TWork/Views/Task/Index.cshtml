@@ -1,0 +1,31 @@
+﻿@model TaskListViewModel
+
+@{
+    ViewBag.Title = "Tasks";
+}
+
+<div class="panel-body"><h4>Tasks</h4></div>
+<hr />
+
+@foreach (TasksByStatusModel tasks in Model.TasksByStatus)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @tasks.TaskStatusName
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in tasks.Tasks)
+            {
+                <tr>
+                    <td>
+                        <div>@item.TITLE</div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

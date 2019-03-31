@@ -10,5 +10,7 @@ namespace TWork.Models.Repositories
     {
         IEnumerable<TASK> GetTasksByUserTeam(string userId, int teamId);
         void UpdateTasks(IEnumerable<TASK> tasks);
+        IEnumerable<TASK_STATUS> GetTaskStatusesByTeam(TEAM team);
+        IEnumerable<TASK> GetTasksByTeamAndStatus(TEAM team, TASK_STATUS status);
     }
 }
