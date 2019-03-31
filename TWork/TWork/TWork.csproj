@@ -11,6 +11,8 @@
     <Compile Remove="Migrations\20190203172533_SeedUser.Designer.cs" />
     <Compile Remove="Migrations\20190204132325_Init.cs" />
     <Compile Remove="Migrations\20190204132325_Init.Designer.cs" />
+    <Compile Remove="Migrations\20190331184327_NavPropertiesForTeam.cs" />
+    <Compile Remove="Migrations\20190331184327_NavPropertiesForTeam.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

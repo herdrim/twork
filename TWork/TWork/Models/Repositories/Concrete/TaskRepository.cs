@@ -22,7 +22,7 @@ namespace TWork.Models.Repositories.Concrete
             => _ctx.TASKs.Where(x => x.TEAM_ID == team.ID && x.TASK_STATUS == status);
 
         public IEnumerable<TASK_STATUS> GetTaskStatusesByTeam(TEAM team)
-            => _ctx.TASKs.Where(x => x.TEAM == team).Select(x => x.TASK_STATUS);
+            => _ctx.TASK_STATUSes.Where(x => x.TEAM == team);
         
 
         public void UpdateTasks(IEnumerable<TASK> tasks)
