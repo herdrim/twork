@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TWork.Models.Entities;
 
 namespace TWork.Migrations
 {
     [DbContext(typeof(TWorkDbContext))]
-    partial class TWorkDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190406144240_UpdateCommentModel")]
+    partial class UpdateCommentModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -45,8 +47,8 @@ namespace TWork.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "b42a1d9c-3625-4234-80f7-727fbeda41af",
-                            ConcurrencyStamp = "62c50947-f58e-42d9-ae68-dd5e8ac98281",
+                            Id = "c63befd7-4996-4358-bd17-c9e033b9b9a5",
+                            ConcurrencyStamp = "f95890c3-6a4e-4acb-ae4e-281bbb37a4b7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         });
@@ -285,17 +287,9 @@ namespace TWork.Migrations
 
                     b.Property<string>("NAME");
 
-                    b.Property<int?>("NEXT_STATUS_ID");
-
-                    b.Property<int?>("PREV_STATUS_ID");
-
                     b.Property<int?>("TEAM_ID");
 
                     b.HasKey("ID");
-
-                    b.HasIndex("NEXT_STATUS_ID");
-
-                    b.HasIndex("PREV_STATUS_ID");
 
                     b.HasIndex("TEAM_ID");
 
@@ -514,14 +508,6 @@ namespace TWork.Migrations
 
             modelBuilder.Entity("TWork.Models.Entities.TASK_STATUS", b =>
                 {
-                    b.HasOne("TWork.Models.Entities.TASK_STATUS", "NEXT_STATUS")
-                        .WithMany()
-                        .HasForeignKey("NEXT_STATUS_ID");
-
-                    b.HasOne("TWork.Models.Entities.TASK_STATUS", "PREV_STATUS")
-                        .WithMany()
-                        .HasForeignKey("PREV_STATUS_ID");
-
                     b.HasOne("TWork.Models.Entities.TEAM", "TEAM")
                         .WithMany("TASK_STATUSes")
                         .HasForeignKey("TEAM_ID");

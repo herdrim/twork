@@ -11,15 +11,8 @@ namespace TWork.Models.Entities
         [Key]
         public int ID { get; set; }
         public string CONTENT { get; set; }
-
-        [ForeignKey("ANSWER")]
-        public int? ANSWER_ID { get; set; }
-        public virtual COMMENT ANSWER { get; set; }
-
-        [ForeignKey("PARENT_COMMENT")]
-        public int? PARENT_COMMENT_ID { get; set; }
-        public virtual COMMENT PARENT_COMMENT { get; set; }
-
+        public DateTime CREATED { get; set; }       
+        
         [ForeignKey("USER")]
         public string USER_ID { get; set; }
         public virtual USER USER { get; set; }

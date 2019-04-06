@@ -47,9 +47,26 @@ namespace TWork.Models.Services.Concrete
 
         public bool CheckPermissionToManageUsers(USER user, int teamId)
         {
-            //TEAM team = _teamRepository.GetTeamById(teamId);
             UserTeamPermissionsViewModel userTeamPermissions = GetPermissionsForUserTeam(user, teamId);
             return userTeamPermissions.CanManageUsers;
+        }
+
+        public bool CheckPermissionToCommentTasks(USER user, int teamId)
+        {
+            UserTeamPermissionsViewModel userTeamPermissions = GetPermissionsForUserTeam(user, teamId);
+            return userTeamPermissions.CanComment;
+        }
+
+        public bool CheckPermissionToCreateTasks(USER user, int teamId)
+        {
+            UserTeamPermissionsViewModel userTeamPermissions = GetPermissionsForUserTeam(user, teamId);
+            return userTeamPermissions.CanCreateTasks;
+        }
+
+        public bool CheckPermissionToAssignTasks(USER user, int teamId)
+        {
+            UserTeamPermissionsViewModel userTeamPermissions = GetPermissionsForUserTeam(user, teamId);
+            return userTeamPermissions.CanAssignTasks;
         }
     }
 }

@@ -55,6 +55,7 @@ namespace TWork
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IMessageRepository, MessageRepository>();
             services.AddTransient<ITaskRepository, TaskRepository>();
+            services.AddTransient<ICommentRepository, CommentRepository>();
 
             #endregion
 
@@ -65,6 +66,7 @@ namespace TWork
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IRoleService, RoleService>();
             services.AddTransient<IPermissionService, PermissionService>();
+            services.AddTransient<ITaskService, TaskService>();
 
             #endregion
 

@@ -17,5 +17,8 @@ namespace TWork.Models.Services
         /// <param name="teamId"></param>
         /// <returns></returns>
         bool CheckPermissionToManageUsers(USER user, int teamId);
+        bool CheckPermissionToCommentTasks(USER user, int teamId);
+        bool CheckPermissionToAssignTasks(USER user, int teamId);
+        bool CheckPermissionToCreateTasks(USER user, int teamId);
     }
 }

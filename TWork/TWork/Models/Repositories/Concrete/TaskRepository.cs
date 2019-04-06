@@ -30,5 +30,23 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.TASKs.UpdateRange(tasks);
             _ctx.SaveChanges();
         }
+
+        public TASK GetTaskById(int taskId)
+            => _ctx.TASKs.FirstOrDefault(x => x.ID == taskId);
+
+        public TASK_STATUS GetTaskStatusById(int taskStatusId)
+            => _ctx.TASK_STATUSes.FirstOrDefault(x => x.ID == taskStatusId);
+
+        public void CreateTask(TASK task)
+        {
+            _ctx.TASKs.Add(task);
+            _ctx.SaveChanges();
+        }
+
+        public void RemoveTask(TASK task)
+        {
+            _ctx.TASKs.Remove(task);
+            _ctx.SaveChanges();
+        }
     }
 }

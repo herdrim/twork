@@ -105,6 +105,54 @@ namespace TWork.Models.Entities
 
                 ctx.SaveChanges();
             }
+
+            if (ctx.TASKs.Count() == 0)
+            {
+                TEAM teamAdm = ctx.TEAMs.FirstOrDefault(x => x.NAME == "TeamAdmin");
+                TASK_STATUS taskStatus = new TASK_STATUS
+                {
+                    NAME = "To do",
+                    TEAM = teamAdm
+                };
+                TASK_STATUS taskStatus2 = new TASK_STATUS
+                {
+                    NAME = "In progress",
+                    TEAM = teamAdm
+                };
+                TASK_STATUS taskStatus3 = new TASK_STATUS
+                {
+                    NAME = "Finished",
+                    TEAM = teamAdm
+                };
+
+                TASK task = new TASK
+                {
+                    TITLE = "Task1",
+                    TEAM = teamAdm,
+                    CREATE_TIME = new DateTime(2018, 12, 12),
+                    DEATHLINE = new DateTime(2019, 04, 20),
+                    DESCRIPTION = "Task 1 description",
+                    TASK_STATUS = taskStatus,
+                    USER = ctx.Users.FirstOrDefault(x => x.UserName == "admin"),                    
+                };
+                TASK task2 = new TASK
+                {
+                    TITLE = "Task2",
+                    TEAM = teamAdm,
+                    CREATE_TIME = new DateTime(2018, 12, 12),
+                    START_TIME = new DateTime(2019, 1, 1),
+                    DEATHLINE = new DateTime(2019, 04, 20),
+                    DESCRIPTION = "Task 2 description",
+                    TASK_STATUS = taskStatus2,
+                    USER = ctx.Users.FirstOrDefault(x => x.UserName == "admin"),                    
+                };
+
+
+                ctx.TASK_STATUSes.AddRange(taskStatus, taskStatus2, taskStatus3);
+                ctx.TASKs.AddRange(task, task2);
+
+                ctx.SaveChanges();
+            }
         }
     }
 }
