@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TWork.Models.Entities;
 using TWork.Models.Repositories;
@@ -10,6 +11,7 @@ using TWork.Models.ViewModels;
 
 namespace TWork.Controllers
 {
+    [Authorize]
     public class TaskStatusController : Controller
     {
         ITaskService _taskService;

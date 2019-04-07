@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using TWork.Models.Entities;
@@ -11,6 +12,7 @@ using TWork.Models.ViewModels;
 
 namespace TWork.Controllers
 {
+    [Authorize]
     public class TaskController : Controller
     {
         ITeamService _teamService;
