@@ -20,5 +20,6 @@ namespace TWork.Models.Services
         bool CheckPermissionToCommentTasks(USER user, int teamId);
         bool CheckPermissionToAssignTasks(USER user, int teamId);
         bool CheckPermissionToCreateTasks(USER user, int teamId);
+        bool CheckIfUserIsTeamOwner(USER user, int teamId);
     }
 }

@@ -15,7 +15,7 @@ namespace TWork.Models.Services
         RoleEditModel GetRoleForEdit(int roleId, int teamId);
         void SaveEditedRole(RoleEditModel editModel);
         RoleAssignViewModel GetMembersToAssign(int teamId, int roleId);
-        Task AssignUsersToRoleAsync(RoleAssignInputModel roleAssignModel);
+        Task<bool> AssignUsersToRoleAsync(RoleAssignInputModel roleAssignModel);
         void DeleteRole(int roleId, int teamId);
     }
 }

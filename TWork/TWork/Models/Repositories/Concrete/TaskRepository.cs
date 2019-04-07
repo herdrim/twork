@@ -48,5 +48,29 @@ namespace TWork.Models.Repositories.Concrete
             _ctx.TASKs.Remove(task);
             _ctx.SaveChanges();
         }
+
+        public void UpdateTaskStatus(TASK_STATUS taskStatus)
+        {
+            _ctx.TASK_STATUSes.Update(taskStatus);
+            _ctx.SaveChanges();
+        }
+
+        public void RemoveTaskStatus(TASK_STATUS taskStatus)
+        {
+            _ctx.TASK_STATUSes.Remove(taskStatus);
+            _ctx.SaveChanges();
+        }
+
+        public void CreateTaskStatus(TASK_STATUS taskStatus)
+        {
+            _ctx.TASK_STATUSes.Add(taskStatus);
+            _ctx.SaveChanges();
+        }
+
+        public void UpdateTaskStatuses(IEnumerable<TASK_STATUS> taskStatuses)
+        {
+            _ctx.TASK_STATUSes.UpdateRange(taskStatuses);
+            _ctx.SaveChanges();
+        }
     }
 }

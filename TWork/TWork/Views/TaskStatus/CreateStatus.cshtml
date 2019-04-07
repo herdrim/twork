@@ -1,0 +1,37 @@
+﻿@model TaskStatusCreateViewModel
+
+@{
+    ViewBag.Title = "CreateTaskStatus";
+}
+
+<div class="panel-body"><h4>Create task status</h4></div>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateStatus" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="TeamId" class="form-control" hidden="hidden" />
+            <div class="form-group">
+                <label asp-for="StatusName" class="control-label"></label>
+                <input asp-for="StatusName" class="form-control" />
+                <span asp-validation-for="StatusName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <select name="IdAfter">
+                    @foreach(var status in Model.StatusesAfterNew)
+                    {
+                        <option value="@status.ID">@status.NAME</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a class="btn btn-primary" asp-action="Index" asp-route-teamId="@Model.TeamId">Back to List</a>
+</div>
+

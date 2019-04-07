@@ -41,16 +41,7 @@ namespace TWork.Models.Services.Concrete
 
                 var tmpTaskStatuses = _taskRepository.GetTaskStatusesByTeam(team);
 
-                List<TASK_STATUS> taskStatuses = new List<TASK_STATUS>();
-                var firstStatus = tmpTaskStatuses.FirstOrDefault(x => x.PREV_STATUS == null);
-                taskStatuses.Add(firstStatus);
-                TASK_STATUS lastStatus = firstStatus;
-                while(lastStatus.NEXT_STATUS != null)
-                {
-                    TASK_STATUS currStatus = lastStatus.NEXT_STATUS;
-                    taskStatuses.Add(currStatus);
-                    lastStatus = currStatus;
-                }
+                IEnumerable<TASK_STATUS> taskStatuses = GetOrderedTaskStatuses(team);
                 
                 foreach(var taskStatus in taskStatuses)
                 {
@@ -207,6 +198,190 @@ namespace TWork.Models.Services.Concrete
                 _taskRepository.RemoveTask(task);
             }
 
+        }
+
+        public TaskStatusViewModel GetTaskStatusesForTeam(int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TaskStatusViewModel taskStatuses = new TaskStatusViewModel();
+            if (team != null)
+            {
+                taskStatuses.TeamId = team.ID;
+                taskStatuses.TaskStatuses = new List<TaskStatusModel>();
+
+                var statuses = GetOrderedTaskStatuses(team);
+            
+                taskStatuses.TaskStatuses.AddRange(statuses.Select(x => new TaskStatusModel
+                {
+                    TeamId = x.TEAM_ID,
+                    StatusId = x.ID,
+                    StatusName = x.NAME,
+                    PrevStatusId = x.PREV_STATUS_ID,
+                    PrevStatusName = x.PREV_STATUS != null ? x.PREV_STATUS.NAME : null,
+                    NextStatusId = x.NEXT_STATUS_ID,
+                    NextStatusName = x.NEXT_STATUS != null ? x.NEXT_STATUS.NAME : null
+                }));
+            }
+
+            return taskStatuses;
+        }
+
+        private IEnumerable<TASK_STATUS> GetOrderedTaskStatuses(TEAM team)
+        {
+            var tmpTaskStatuses = _taskRepository.GetTaskStatusesByTeam(team);
+
+            List<TASK_STATUS> taskStatuses = new List<TASK_STATUS>();
+            var firstStatus = tmpTaskStatuses.FirstOrDefault(x => x.PREV_STATUS == null);
+            taskStatuses.Add(firstStatus);
+            TASK_STATUS lastStatus = firstStatus;
+            while (lastStatus.NEXT_STATUS != null)
+            {
+                TASK_STATUS currStatus = lastStatus.NEXT_STATUS;
+                taskStatuses.Add(currStatus);
+                lastStatus = currStatus;
+            }
+
+            return taskStatuses;
+        }
+
+        public TaskStatusEditModel GetTaskStatusForEdit(int statusId, int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TASK_STATUS status = _taskRepository.GetTaskStatusById(statusId);            
+
+            if (team != null && status != null && status.TEAM == team)
+            {
+                TaskStatusEditModel taskStatus = new TaskStatusEditModel
+                {
+                    StatusId = status.ID,
+                    TeamId = status.TEAM_ID ?? 0,
+                    StatusName = status.NAME                    
+                };
+
+                if (status.TEAM_ID != null)
+                    return taskStatus;
+            }
+
+            return null;
+        }
+
+        public void UpdateTaskStatus(TaskStatusEditModel statusModel)
+        {
+            TEAM team = _teamRepository.GetTeamById(statusModel.TeamId);
+            TASK_STATUS status = _taskRepository.GetTaskStatusById(statusModel.StatusId);
+
+            if (team != null && status != null && status.TEAM == team)
+            {
+                status.NAME = statusModel.StatusName;
+                _taskRepository.UpdateTaskStatus(status);
+            }
+        }
+
+        public void DeleteTaskStatus(int taskStatusId, int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TASK_STATUS status = _taskRepository.GetTaskStatusById(taskStatusId);            
+
+            if (team != null && status != null && status.TEAM == team)
+            {
+                var tasksInStatus =_taskRepository.GetTasksByTeamAndStatus(team, status);
+                if (tasksInStatus.Count() <= 0)
+                {
+                    var statuses = _taskRepository.GetTaskStatusesByTeam(team);
+
+                    if (status.PREV_STATUS != null && status.NEXT_STATUS == null)
+                    {
+                        var newLastStatus = status.PREV_STATUS;
+                        newLastStatus.NEXT_STATUS = null;
+                        _taskRepository.UpdateTaskStatus(newLastStatus);
+                        _taskRepository.RemoveTaskStatus(status);
+                    }
+                    else if (status.PREV_STATUS == null && status.NEXT_STATUS != null)
+                    {
+                        var newFirstStatus = status.NEXT_STATUS;
+                        newFirstStatus.PREV_STATUS = null;
+                        _taskRepository.UpdateTaskStatus(newFirstStatus);
+                        _taskRepository.RemoveTaskStatus(status);
+                    }
+                    else
+                    {
+                        var prevStatus = status.PREV_STATUS;
+                        var nextStatus = status.NEXT_STATUS;
+                        prevStatus.NEXT_STATUS = nextStatus;
+                        nextStatus.PREV_STATUS = prevStatus;
+                        _taskRepository.UpdateTaskStatuses(new List<TASK_STATUS> { prevStatus, nextStatus });
+                        _taskRepository.RemoveTaskStatus(status);
+                    }
+                }
+            }
+        }
+
+        public TaskStatusCreateViewModel GetTaskStatusesForCreate (int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TaskStatusCreateViewModel createModel = new TaskStatusCreateViewModel();
+
+            if (team != null)
+            {
+                createModel.StatusesAfterNew = new List<TASK_STATUS>();
+                createModel.TeamId = team.ID;
+                var statuses = GetOrderedTaskStatuses(team).ToList();
+                statuses.Add(new TASK_STATUS { ID = -1, NAME = "[As last status]" });
+
+                createModel.StatusesAfterNew.AddRange(statuses);
+            }
+
+            return createModel;
+        }
+
+        public void CreateTaskStatus(TaskStatusCreateModel createModel)
+        {
+            TEAM team = _teamRepository.GetTeamById(createModel.TeamId);
+
+            if (team != null)
+            {
+                TASK_STATUS status = new TASK_STATUS
+                {
+                    NAME = createModel.StatusName,
+                    TEAM = team
+                };
+
+                if (createModel.IdAfter > 0)
+                {
+                    var nextStatus = _taskRepository.GetTaskStatusById(createModel.IdAfter);
+                    var prevStatus = nextStatus.PREV_STATUS;
+                    status.NEXT_STATUS = nextStatus;
+                    status.PREV_STATUS = prevStatus;
+                    _taskRepository.CreateTaskStatus(status);
+
+                    nextStatus.PREV_STATUS = status;
+                    _taskRepository.UpdateTaskStatus(nextStatus);
+                    if (prevStatus != null)
+                    {
+                        prevStatus.NEXT_STATUS = status;
+                        _taskRepository.UpdateTaskStatus(prevStatus);
+                    }                    
+                }
+                else
+                {
+                    var oldLastStatus = GetOrderedTaskStatuses(team).FirstOrDefault(x => x.NEXT_STATUS == null);
+                    status.PREV_STATUS = oldLastStatus;
+                    _taskRepository.CreateTaskStatus(status);
+                    oldLastStatus.NEXT_STATUS = status;
+                    _taskRepository.UpdateTaskStatus(oldLastStatus);
+                }
+            }
+        }
+
+        public IEnumerable<TASK> GetTasksByTeamAndStatusIds(int teamId, int taskStatusId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TASK_STATUS status = _taskRepository.GetTaskStatusById(taskStatusId);
+
+            if (team != null && status != null && status.TEAM == team)
+                return _taskRepository.GetTasksByTeamAndStatus(team, status);
+
+            return null;
         }
     }
 }

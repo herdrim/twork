@@ -16,5 +16,9 @@ namespace TWork.Models.Repositories
         TASK_STATUS GetTaskStatusById(int taskStatusId);
         void CreateTask(TASK task);
         void RemoveTask(TASK task);
+        void UpdateTaskStatus(TASK_STATUS taskStatus);
+        void RemoveTaskStatus(TASK_STATUS taskStatus);
+        void CreateTaskStatus(TASK_STATUS taskStatus);
+        void UpdateTaskStatuses(IEnumerable<TASK_STATUS> taskStatuses);
     }
 }

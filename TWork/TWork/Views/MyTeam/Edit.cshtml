@@ -25,6 +25,7 @@
 </div>
 
 <div>
-    <a asp-action="Details" asp-route-teamId="@Model.TeamId">Back to List</a>
+    <a class="btn btn-primary" asp-action="Index" asp-controller="TaskStatus" asp-route-teamId="@Model.TeamId">Edit task statuses</a>
+    <a class="btn btn-primary" asp-action="Details" asp-route-teamId="@Model.TeamId">Back to List</a>
 </div>
 

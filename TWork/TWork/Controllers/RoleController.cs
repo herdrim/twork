@@ -127,8 +127,14 @@ namespace TWork.Controllers
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_permissionService.CheckPermissionToManageUsers(user, roleAssignModel.TeamId))
             {
-                await _roleService.AssignUsersToRoleAsync(roleAssignModel);
-                return RedirectToAction("Index", new { teamId = roleAssignModel.TeamId });
+                bool canAssign = await _roleService.AssignUsersToRoleAsync(roleAssignModel);
+                if (canAssign)
+                    return RedirectToAction("Index", new { teamId = roleAssignModel.TeamId });
+                else
+                {
+                    ModelState.AddModelError(string.Empty, "This role is required");
+                    return View(_roleService.GetMembersToAssign(roleAssignModel.TeamId, roleAssignModel.RoleId));
+                }
             }
             return RedirectToAction("AccessDenied", "Account");
         }

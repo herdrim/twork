@@ -16,5 +16,12 @@ namespace TWork.Models.Services
         IEnumerable<TaskCommentViewModel> GetTaskComments(int taskId);
         void CreateTask(TaskCreateModel createModel, USER user);
         void DeleteTask(int taskId, int teamId);
+        TaskStatusViewModel GetTaskStatusesForTeam(int teamId);
+        TaskStatusEditModel GetTaskStatusForEdit(int statusId, int teamId);
+        void UpdateTaskStatus(TaskStatusEditModel statusModel);
+        void DeleteTaskStatus(int taskStatusId, int teamId);
+        TaskStatusCreateViewModel GetTaskStatusesForCreate(int teamId);
+        void CreateTaskStatus(TaskStatusCreateModel createModel);
+        IEnumerable<TASK> GetTasksByTeamAndStatusIds(int teamId, int taskStatusId);
     }
 }

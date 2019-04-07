@@ -1,0 +1,64 @@
+﻿@model TaskStatusViewModel
+
+@{
+    ViewBag.Title = "TaskStatuses";
+}
+
+<div class="panel-body"><h4>Task Statuses</h4></div>
+<hr />
+<div class="text-danger">@ViewBag.TaskStatusError</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Status name
+            </th>
+            <th>
+                Previous status name
+            </th>
+            <th>
+                Next status name
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.TaskStatuses)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StatusName)
+                </td>
+                <td>
+                    @if (item.PrevStatusId != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.PrevStatusName)
+                    }
+                    else
+                    {
+                        <div>Empty - this status is first</div>
+                    }
+                </td>
+                <td>
+                    @if (item.NextStatusId != null)
+                    {
+                        @Html.DisplayFor(modelItem => item.NextStatusName)
+                    }
+                    else
+                    {
+                        <div>Empty - this status is last</div>
+                    }
+                </td>
+                <td>
+                    <a class="btn btn-sm btn-primary" asp-action="EditStatus" asp-route-taskStatusId="@item.StatusId" asp-route-teamId="@Model.TeamId">Edit</a>
+                    <form asp-action="DeleteStatus" asp-route-taskStatusId="@item.StatusId" asp-route-teamId="@Model.TeamId" method="post">
+                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                    </form>
+
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="btn btn-primary" asp-action="CreateStatus" asp-route-teamId="@Model.TeamId">Add status</a>

@@ -68,5 +68,11 @@ namespace TWork.Models.Services.Concrete
             UserTeamPermissionsViewModel userTeamPermissions = GetPermissionsForUserTeam(user, teamId);
             return userTeamPermissions.CanAssignTasks;
         }
+
+        public bool CheckIfUserIsTeamOwner(USER user, int teamId)
+        {
+            UserTeamPermissionsViewModel userTeamPermissions = GetPermissionsForUserTeam(user, teamId);
+            return userTeamPermissions.IsTeamOwner;
+        }
     }
 }

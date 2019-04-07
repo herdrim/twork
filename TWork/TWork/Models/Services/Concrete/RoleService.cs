@@ -186,13 +186,16 @@ namespace TWork.Models.Services.Concrete
             return null;
         }
 
-        public async Task AssignUsersToRoleAsync(RoleAssignInputModel roleAssignModel)
+        public async Task<bool> AssignUsersToRoleAsync(RoleAssignInputModel roleAssignModel)
         {
             TEAM team = _teamRepository.GetTeamById(roleAssignModel.TeamId);
             ROLE role = _roleRepository.GetRoleById(roleAssignModel.RoleId);
+            bool canDelete = false;
 
             if (team != null && role != null)
             {
+                canDelete = true;
+
                 List<USER_TEAM_ROLES> usersToRemove = new List<USER_TEAM_ROLES>();
                 if (roleAssignModel.IdsToRemove != null)
                 {                    
@@ -218,9 +221,18 @@ namespace TWork.Models.Services.Concrete
                         }
                     }                    
                 }
+                
+                if (role.IS_REQUIRED && usersToAdd.Count <= 0)
+                {
+                    var userRoleCount = _roleRepository.GetUsersByTeamRole(role, team).Count();
+                    canDelete = usersToRemove.Count < userRoleCount;
+                }
 
-                _roleRepository.AddAndDeleteUserTeamRoles(usersToAdd, usersToRemove);
+                if (canDelete)
+                    _roleRepository.AddAndDeleteUserTeamRoles(usersToAdd, usersToRemove);
             }
+
+            return canDelete;
         }
     }
 }
