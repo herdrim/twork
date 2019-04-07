@@ -89,7 +89,7 @@ namespace TWork.Models.Services.Concrete
                     retMessages.Add(message);
                 }
             }
-            return retMessages;
+            return retMessages.OrderByDescending(x => x.SendDate);
         }
 
         public async Task RemoveTeamJoinRequestByUserFrom(string userId, int teamId)

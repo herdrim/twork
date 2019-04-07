@@ -38,8 +38,12 @@ namespace TWork.Controllers
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_teamRepository.IsTeamMember(user, teamId))
-            {                
-                return View(_taskService.TaskList(teamId, user));
+            {
+                var model = _taskService.TaskList(teamId, user);
+                if (model != null)
+                    return View(model);
+                else
+                    return RedirectToAction("Index", "TaskStatus", new { teamId = teamId });
             }
             return RedirectToAction("AccessDenied", "Account");
         }

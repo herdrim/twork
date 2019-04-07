@@ -32,29 +32,31 @@ namespace TWork.Models.Services.Concrete
             TEAM team = _teamRepository.GetTeamById(teamId);
             if(team != null)
             {
-                var permissions = _permissionService.GetPermissionsForUserTeam(user, team.ID);
-                TaskListViewModel taskListModel = new TaskListViewModel();
-                taskListModel.TeamId = team.ID;                
-                taskListModel.CanAssignTask = permissions.CanAssignTasks;
-                taskListModel.CanCreateTask = permissions.CanCreateTasks;
-                taskListModel.TasksByStatus = new List<TasksByStatusModel>();
-
                 var tmpTaskStatuses = _taskRepository.GetTaskStatusesByTeam(team);
-
-                IEnumerable<TASK_STATUS> taskStatuses = GetOrderedTaskStatuses(team);
-                
-                foreach(var taskStatus in taskStatuses)
+                if (tmpTaskStatuses != null && tmpTaskStatuses.Count() > 0)
                 {
-                    TasksByStatusModel tasksByStatus = new TasksByStatusModel
-                    {
-                        TaskStatusId = taskStatus.ID,
-                        TaskStatusName = taskStatus.NAME,
-                        Tasks = _taskRepository.GetTasksByTeamAndStatus(team, taskStatus).OrderBy(x => x.DEATHLINE).ToList()
-                    };
+                    var permissions = _permissionService.GetPermissionsForUserTeam(user, team.ID);
+                    TaskListViewModel taskListModel = new TaskListViewModel();
+                    taskListModel.TeamId = team.ID;
+                    taskListModel.CanAssignTask = permissions.CanAssignTasks;
+                    taskListModel.CanCreateTask = permissions.CanCreateTasks;
+                    taskListModel.TasksByStatus = new List<TasksByStatusModel>();
 
-                    taskListModel.TasksByStatus.Add(tasksByStatus);
+                    IEnumerable<TASK_STATUS> taskStatuses = GetOrderedTaskStatuses(team);
+
+                    foreach (var taskStatus in taskStatuses)
+                    {
+                        TasksByStatusModel tasksByStatus = new TasksByStatusModel
+                        {
+                            TaskStatusId = taskStatus.ID,
+                            TaskStatusName = taskStatus.NAME,
+                            Tasks = _taskRepository.GetTasksByTeamAndStatus(team, taskStatus).OrderBy(x => x.DEATHLINE).ToList()
+                        };
+
+                        taskListModel.TasksByStatus.Add(tasksByStatus);
+                    }
+                    return taskListModel;
                 }
-                return taskListModel;
             }
             return null;
         }
@@ -210,17 +212,21 @@ namespace TWork.Models.Services.Concrete
                 taskStatuses.TaskStatuses = new List<TaskStatusModel>();
 
                 var statuses = GetOrderedTaskStatuses(team);
-            
-                taskStatuses.TaskStatuses.AddRange(statuses.Select(x => new TaskStatusModel
+                if (statuses != null)
                 {
-                    TeamId = x.TEAM_ID,
-                    StatusId = x.ID,
-                    StatusName = x.NAME,
-                    PrevStatusId = x.PREV_STATUS_ID,
-                    PrevStatusName = x.PREV_STATUS != null ? x.PREV_STATUS.NAME : null,
-                    NextStatusId = x.NEXT_STATUS_ID,
-                    NextStatusName = x.NEXT_STATUS != null ? x.NEXT_STATUS.NAME : null
-                }));
+                    taskStatuses.TaskStatuses.AddRange(statuses.Select(x => new TaskStatusModel
+                    {
+                        TeamId = x.TEAM_ID,
+                        StatusId = x.ID,
+                        StatusName = x.NAME,
+                        PrevStatusId = x.PREV_STATUS_ID,
+                        PrevStatusName = x.PREV_STATUS != null ? x.PREV_STATUS.NAME : null,
+                        NextStatusId = x.NEXT_STATUS_ID,
+                        NextStatusName = x.NEXT_STATUS != null ? x.NEXT_STATUS.NAME : null
+                    }));
+                }
+                else
+                    return null;
             }
 
             return taskStatuses;
@@ -230,18 +236,23 @@ namespace TWork.Models.Services.Concrete
         {
             var tmpTaskStatuses = _taskRepository.GetTaskStatusesByTeam(team);
 
-            List<TASK_STATUS> taskStatuses = new List<TASK_STATUS>();
-            var firstStatus = tmpTaskStatuses.FirstOrDefault(x => x.PREV_STATUS == null);
-            taskStatuses.Add(firstStatus);
-            TASK_STATUS lastStatus = firstStatus;
-            while (lastStatus.NEXT_STATUS != null)
+            if (tmpTaskStatuses != null && tmpTaskStatuses.Count() > 0)
             {
-                TASK_STATUS currStatus = lastStatus.NEXT_STATUS;
-                taskStatuses.Add(currStatus);
-                lastStatus = currStatus;
-            }
+                List<TASK_STATUS> taskStatuses = new List<TASK_STATUS>();
+                var firstStatus = tmpTaskStatuses.FirstOrDefault(x => x.PREV_STATUS == null);
+                taskStatuses.Add(firstStatus);
+                TASK_STATUS lastStatus = firstStatus;
+                while (lastStatus.NEXT_STATUS != null)
+                {
+                    TASK_STATUS currStatus = lastStatus.NEXT_STATUS;
+                    taskStatuses.Add(currStatus);
+                    lastStatus = currStatus;
+                }
 
-            return taskStatuses;
+                return taskStatuses;
+            }
+            else
+                return null;
         }
 
         public TaskStatusEditModel GetTaskStatusForEdit(int statusId, int teamId)
@@ -289,28 +300,31 @@ namespace TWork.Models.Services.Concrete
                 {
                     var statuses = _taskRepository.GetTaskStatusesByTeam(team);
 
-                    if (status.PREV_STATUS != null && status.NEXT_STATUS == null)
+                    if (statuses.Count() > 1)
                     {
-                        var newLastStatus = status.PREV_STATUS;
-                        newLastStatus.NEXT_STATUS = null;
-                        _taskRepository.UpdateTaskStatus(newLastStatus);
-                        _taskRepository.RemoveTaskStatus(status);
-                    }
-                    else if (status.PREV_STATUS == null && status.NEXT_STATUS != null)
-                    {
-                        var newFirstStatus = status.NEXT_STATUS;
-                        newFirstStatus.PREV_STATUS = null;
-                        _taskRepository.UpdateTaskStatus(newFirstStatus);
-                        _taskRepository.RemoveTaskStatus(status);
-                    }
-                    else
-                    {
-                        var prevStatus = status.PREV_STATUS;
-                        var nextStatus = status.NEXT_STATUS;
-                        prevStatus.NEXT_STATUS = nextStatus;
-                        nextStatus.PREV_STATUS = prevStatus;
-                        _taskRepository.UpdateTaskStatuses(new List<TASK_STATUS> { prevStatus, nextStatus });
-                        _taskRepository.RemoveTaskStatus(status);
+                        if (status.PREV_STATUS != null && status.NEXT_STATUS == null)
+                        {
+                            var newLastStatus = status.PREV_STATUS;
+                            newLastStatus.NEXT_STATUS = null;
+                            _taskRepository.UpdateTaskStatus(newLastStatus);
+                            _taskRepository.RemoveTaskStatus(status);
+                        }
+                        else if (status.PREV_STATUS == null && status.NEXT_STATUS != null)
+                        {
+                            var newFirstStatus = status.NEXT_STATUS;
+                            newFirstStatus.PREV_STATUS = null;
+                            _taskRepository.UpdateTaskStatus(newFirstStatus);
+                            _taskRepository.RemoveTaskStatus(status);
+                        }
+                        else
+                        {
+                            var prevStatus = status.PREV_STATUS;
+                            var nextStatus = status.NEXT_STATUS;
+                            prevStatus.NEXT_STATUS = nextStatus;
+                            nextStatus.PREV_STATUS = prevStatus;
+                            _taskRepository.UpdateTaskStatuses(new List<TASK_STATUS> { prevStatus, nextStatus });
+                            _taskRepository.RemoveTaskStatus(status);
+                        }
                     }
                 }
             }
@@ -325,10 +339,14 @@ namespace TWork.Models.Services.Concrete
             {
                 createModel.StatusesAfterNew = new List<TASK_STATUS>();
                 createModel.TeamId = team.ID;
-                var statuses = GetOrderedTaskStatuses(team).ToList();
-                statuses.Add(new TASK_STATUS { ID = -1, NAME = "[As last status]" });
+                var tmpStatuses = GetOrderedTaskStatuses(team);
+                if (tmpStatuses != null)
+                {
+                    var statuses = tmpStatuses.ToList();
+                    statuses.Add(new TASK_STATUS { ID = -1, NAME = "[As last status]" });
 
-                createModel.StatusesAfterNew.AddRange(statuses);
+                    createModel.StatusesAfterNew.AddRange(statuses);
+                }
             }
 
             return createModel;
@@ -362,13 +380,17 @@ namespace TWork.Models.Services.Concrete
                         _taskRepository.UpdateTaskStatus(prevStatus);
                     }                    
                 }
-                else
+                else if (createModel.IdAfter == -1)
                 {
                     var oldLastStatus = GetOrderedTaskStatuses(team).FirstOrDefault(x => x.NEXT_STATUS == null);
                     status.PREV_STATUS = oldLastStatus;
                     _taskRepository.CreateTaskStatus(status);
                     oldLastStatus.NEXT_STATUS = status;
                     _taskRepository.UpdateTaskStatus(oldLastStatus);
+                }
+                else
+                {
+                    _taskRepository.CreateTaskStatus(status);
                 }
             }
         }

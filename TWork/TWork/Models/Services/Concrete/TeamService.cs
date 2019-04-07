@@ -144,7 +144,7 @@ namespace TWork.Models.Services.Concrete
                 }
             }
 
-            return teamMessages;
+            return teamMessages.OrderByDescending(x => x.SendDate);
         }
 
         public bool CreateTeam(USER user, string teamName)
@@ -269,6 +269,16 @@ namespace TWork.Models.Services.Concrete
                 await _messageService.CreateNewMessageForUser(user.Id, sender.Id, message, team, MessageTypeNames.INVITATION);
                 
             }
+        }
+
+        public IEnumerable<MyTeamsForNavigationViewModel> GetUserTeamsForNavigation(USER user)
+        {
+            var teams = _teamRepository.GetTeamsByUser(user);
+            return teams.Select(x => new MyTeamsForNavigationViewModel
+            {
+                TeamId = x.ID,
+                TeamName = x.NAME
+            });
         }
     }
 }

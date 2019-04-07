@@ -34,7 +34,11 @@ namespace TWork.Controllers
             {
                 if (deleteError)
                     ViewBag.TaskStatusError = "Task status can not contains tasks before delete";
-                return View(_taskService.GetTaskStatusesForTeam(teamId));                
+                var model = _taskService.GetTaskStatusesForTeam(teamId);
+                if (model != null)
+                    return View(model);
+                else
+                    return RedirectToAction("CreateStatus", new { teamId = teamId });
             }
             return RedirectToAction("AccessDenied", "Account");
         }

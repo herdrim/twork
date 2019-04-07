@@ -51,10 +51,12 @@
                 </td>
                 <td>
                     <a class="btn btn-sm btn-primary" asp-action="EditStatus" asp-route-taskStatusId="@item.StatusId" asp-route-teamId="@Model.TeamId">Edit</a>
-                    <form asp-action="DeleteStatus" asp-route-taskStatusId="@item.StatusId" asp-route-teamId="@Model.TeamId" method="post">
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form>
-
+                    @if (Model.TaskStatuses.Count > 1)
+                    {
+                        <form asp-action="DeleteStatus" asp-route-taskStatusId="@item.StatusId" asp-route-teamId="@Model.TeamId" method="post">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    }
                 </td>
             </tr>
         }

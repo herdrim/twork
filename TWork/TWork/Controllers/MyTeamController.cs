@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using TWork.Models.Common;
 using TWork.Models.Entities;
 using TWork.Models.Repositories;
@@ -81,26 +82,11 @@ namespace TWork.Controllers
                 return RedirectToAction("AccessDenied", "Account");
         }
 
-        public async Task<string> GetTeamsForContext()
+        public async Task<string> MyTeams()
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            int? teamId = HttpContext.Session.GetInt32(SessionKeys.TEAM_ID_CONTEXT);            
-            string json = _teamService.GetUserTeamsJsonForContext(user, teamId);            
-            return json;
-        }
-
-        [HttpPost]
-        public JsonResult SetTeamSessionValue(string teamId)
-        {
-            int id;
-            if (int.TryParse(teamId, out id))
-            {
-                HttpContext.Session.Remove(SessionKeys.TEAM_ID_CONTEXT);
-                HttpContext.Session.SetInt32(SessionKeys.TEAM_ID_CONTEXT, id);
-            }
-            else
-                return Json(new { isValid = false, message = "Error while parsing id" });
-            return Json(new { isValid = true });
+            var teams = _teamService.GetUserTeamsForNavigation(user);
+            return JsonConvert.SerializeObject(teams);
         }
 
         #region JoinRequests

@@ -23,7 +23,7 @@ namespace TWork.Models.Repositories.Concrete
             => _ctx.MESSAGE_TYPEs;
 
         public IEnumerable<MESSAGE> GetMessagesByTeam(TEAM team)
-            => _ctx.MESSAGEs.Where(x => x.TEAM == team);
+            => _ctx.MESSAGEs.Where(x => x.TEAM == team && x.USER_TO == null);
 
         public IEnumerable<MESSAGE> GetMessagesFromUser(USER user, string messageTypeName = null)
         {

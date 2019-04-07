@@ -20,51 +20,58 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script>
-        function getTeams() {
-            if ($("#teamCtx").children().length == 0) {
-                $.ajax({
-                    type: "GET",
-                    url: '/MyTeam/GetTeamsForContext',
-                    dataType: 'json',
-                    success: function (result) {
-                        for (var i = 0; i < result.TeamCount; i++) {
-                            if (result.ActiveTeam != null && result.ActiveTeam == result.Teams[i].TeamId)
-                                $("#teamCtx").append("<option value='" + result.Teams[i].TeamId + "' selected>" + result.Teams[i].TeamName + "</option>");
-                            else
-                                $("#teamCtx").append("<option value='" + result.Teams[i].TeamId + "'>" + result.Teams[i].TeamName + "</option>");
-                        }
-                    },
-                    error: function (res) {
-                        alert("Błąd");
-                    }
-                });
-            }
-        }
+    <script src="~/js/TeamDropdownButton.js"></script>
 
-        function setContextToSession() {
-            $.ajax({
-                type: "POST",
-                url: '/MyTeam/SetTeamSessionValue',
-                data: { teamId: $("#teamCtx").val() },
-                dataType: 'json',
-                success: function (data) {
-                    if (!data.isValid) {
-                        alert(data.message);
-                    }
-                }
-            })
-        }
-
-    </script>
     <title>@ViewBag.Title</title>
+
+    <style>
+        nav div {
+            float: left;
+        }
+
+        nav button {
+            margin: 0 0.2em 0 0.2em;
+        }
+    </style>
 </head>
-<body> @*onload="getTeams()">*@
-    @if (!String.IsNullOrEmpty(User.Identity.Name))
-    {
-        <a class="btn btn-danger" asp-action="Logout" asp-controller="Account">Wyloguj</a>
-    }
-    @*<select id="teamCtx" onchange="setContextToSession()"></select>*@
+<body>
+    <nav class="bg-secondary panel-body" style="padding:0.5em 1em 0.5em 1em;">
+
+        <div>
+            <a class="btn btn-success" href="/MyTeam">Home</a>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                My Teams
+            </button>
+            <div id="dropdownMyTeams" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            </div>
+        </div>
+
+        <div class="dropdown">
+            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownOtherTeamsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Other Teams
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <a class="dropdown-item" href="/Team">Teams</a>
+                <a class="dropdown-item" href="/Team/CreateTeam">Create your team</a>
+            </div>
+        </div>
+        <a style="" class="btn btn-success" asp-action="MyMessages" asp-controller="Message">My Messages</a>
+
+        @if (!String.IsNullOrEmpty(User.Identity.Name))
+        {
+            <a style="" class="btn btn-danger" asp-action="Logout" asp-controller="Account">Log out</a>
+        }
+        else
+        {
+            <a class="btn btn-success" asp-action="Login" asp-controller="Account">Log in</a>
+            <a class="btn btn-primary" asp-action="Register" asp-controller="Account">Register</a>
+        }
+    </nav>
+
+    
 
     <div class="marg">@RenderBody()</div>
 

@@ -33,5 +33,6 @@ namespace TWork.Models.Services
         void SaveTeamInformation(TeamInformationViewModel teamInfo);
         void RemoveMember(int teamId, string userId);
         Task InviteUserToTeam(USER sender, int teamId, string email);
+        IEnumerable<MyTeamsForNavigationViewModel> GetUserTeamsForNavigation(USER user);
     }
 }
