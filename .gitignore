@@ -4,3 +4,5 @@ TWork/TWork/obj/
 TWork/TWork/Properties/PublishProfiles/
 TWork/TWork/node_modules/
 .vs/
+TWork/TWorkService/bin/
+TWork/TWorkService/obj/
