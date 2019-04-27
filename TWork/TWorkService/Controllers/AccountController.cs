@@ -26,7 +26,7 @@ namespace TWorkService.Controllers
 
         [HttpPost("Login")]
         public async Task<TWorkService.Models.LoginReturnModel> Login([FromBody()] TWorkService.Models.LoginModel loginModel)
-        {
+        {            
             LoginUserViewModel details = new LoginUserViewModel
             {
                 Email = loginModel.UserLogin,
@@ -41,7 +41,7 @@ namespace TWorkService.Controllers
                 {
                     UserId = user.Id,
                     UserLogin = user.Email,
-                    Password = "",
+                    Password = loginModel.Password,
                     Error = false,
                     ErrorMsg = ""
                 };
