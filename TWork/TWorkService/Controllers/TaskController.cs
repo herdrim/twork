@@ -72,5 +72,28 @@ namespace TWorkService.Controllers
             }
             return null;
         }
+
+        [HttpPost("ChangeTaskStatus")]
+        public async Task<bool> ChangeTaskStatus([FromBody] ChangeTaskStatusModel taskStatusModel)
+        {
+            bool isStatusChanged = false;
+            LoginUserViewModel details = new LoginUserViewModel
+            {
+                Email = taskStatusModel.UserLogin,
+                Password = taskStatusModel.Password
+            };
+
+            bool succeeded = await _userService.LoginAsync(details);            
+            if (succeeded)
+            {
+                USER user = await _userRepository.GetUserByEmail(details.Email);
+                if (_teamRepository.IsTeamMember(user, taskStatusModel.TeamId))
+                {
+                    isStatusChanged = _taskService.ChangeTaskStatus(user, taskStatusModel.TaskId, taskStatusModel.TaskStatusId, taskStatusModel.TeamId);
+                }
+            }
+
+            return isStatusChanged;
+        }
     }
 }

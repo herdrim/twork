@@ -23,5 +23,6 @@ namespace TWork.Models.Services
         TaskStatusCreateViewModel GetTaskStatusesForCreate(int teamId);
         void CreateTaskStatus(TaskStatusCreateModel createModel);
         IEnumerable<TASK> GetTasksByTeamAndStatusIds(int teamId, int taskStatusId);
+        bool ChangeTaskStatus(USER user, int taskId, int newStatusId, int teamId);
     }
 }

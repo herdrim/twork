@@ -113,7 +113,7 @@ namespace TWork.Models.Services.Concrete
             TEAM team = _teamRepository.GetTeamById(modificationModel.TeamId);
             TASK task = _taskRepository.GetTaskById(modificationModel.TaskId);
 
-            if (task != null)
+            if (task != null && team != null)
             {
                 if (_permissionService.CheckPermissionToCreateTasks(user, team.ID))
                 {
@@ -135,6 +135,24 @@ namespace TWork.Models.Services.Concrete
 
                 _taskRepository.UpdateTasks(new List<TASK> { task });
             }
+        }
+
+        public bool ChangeTaskStatus(USER user, int taskId, int newStatusId, int teamId)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            TASK task = _taskRepository.GetTaskById(taskId);
+            TASK_STATUS newStatus = _taskRepository.GetTaskStatusById(newStatusId);
+
+            if (task != null && team != null && newStatus != null)
+            {
+                if (task.USER == user || _permissionService.CheckPermissionToCreateTasks(user, team.ID))
+                {
+                    task.TASK_STATUS = newStatus;
+                    _taskRepository.UpdateTasks(new List<TASK> { task });
+                    return true;
+                }
+            }
+            return false;
         }
 
         public void AddCommentToTask (CommentAddModel commentModel, USER user)
