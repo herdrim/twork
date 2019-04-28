@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:twork_mobile/TaskStatusPage.dart';
  
 class TaskStatus {
   int taskStatusId;
@@ -128,7 +129,7 @@ class TaskPageState extends State {
   build(context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("TeamMembers"),
+        title: Text("Tasks"),
       ),
       body: ListView.separated(
         separatorBuilder: (context, index) => Divider(
@@ -153,33 +154,26 @@ class TaskPageState extends State {
                     ),
                     itemCount: tasksStatuses[index].tasks.length,
                     itemBuilder: (context, pos){
-                      return Row(                   
-                        children: _buildTaskByStatus(index, pos) //<Widget>[
-                          // Container(
-                          //   padding: const EdgeInsets.all(5.0),
-                          //   decoration: new BoxDecoration(
-                          //     border: Border( right: BorderSide(color: Colors.black))
-                          //   ),
-                          //   child: Text(tasksStatuses[index].tasks[pos].taskTitle),
-                          // ), 
-                          // Container(
-                          //   padding: const EdgeInsets.all(5.0),
-                          //   decoration: new BoxDecoration(
-                          //     border: Border( right: BorderSide(color: Colors.black))
-                          //   ),
-                          //   child: Text(tasksStatuses[index].tasks[pos].startTime),
-                          // ),
-                          // Container(
-                          //   padding: const EdgeInsets.all(5.0),
-                          //   decoration: new BoxDecoration(
-                          //     border: Border( right: BorderSide(color: Colors.black))
-                          //   ),
-                          //   child: Text(tasksStatuses[index].tasks[pos].deathline),
-                          // ),                                                  
-                        // ],
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.push(context, 
+                            MaterialPageRoute(builder: (context) =>
+                              TaskStatusPage(
+                                userLogin: userLogin, 
+                                password: password, 
+                                task: tasksStatuses[index].tasks[pos],
+                                currentTaskStatus: tasksStatuses[index].taskStatusId,
+                                teamId: teamId
+                              )
+                            )
+                          );
+                        },
+                        child: Row(                   
+                          children: _buildTaskByStatus(index, pos),                          
+                        ),
                       );
                     },
-                  ) //_buildTasksByStatus(index),
+                  )
                 ) 
               ],
             ),
