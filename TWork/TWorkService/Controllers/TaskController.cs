@@ -95,5 +95,40 @@ namespace TWorkService.Controllers
 
             return isStatusChanged;
         }
+
+        [HttpPost("GetTeamTaskStatuses")]
+        public async Task<List<TaskStatusBasicModel>> GetTeamTaskStatuses([FromBody] UserTeamModel teamModel)
+        {
+            LoginUserViewModel details = new LoginUserViewModel
+            {
+                Email = teamModel.UserLogin,
+                Password = teamModel.Password
+            };
+
+            bool succeeded = await _userService.LoginAsync(details);
+            if (succeeded)
+            {
+                USER user = await _userRepository.GetUserByEmail(details.Email);
+                if (_teamRepository.IsTeamMember(user, teamModel.TeamId))
+                {
+                    var taskStatuses = _taskService.GetTaskStatusesForTeam(teamModel.TeamId);
+                    if (taskStatuses != null && taskStatuses.TaskStatuses != null)
+                    {
+                        List<TaskStatusBasicModel> taskStatusesReturnModel = new List<TaskStatusBasicModel>();
+                        foreach (var status in taskStatuses.TaskStatuses)
+                        {
+                            TaskStatusBasicModel taskStatus = new TaskStatusBasicModel
+                            {
+                                StatusId = status.StatusId,
+                                StatusName = status.StatusName
+                            };
+                            taskStatusesReturnModel.Add(taskStatus);
+                        }
+                        return taskStatusesReturnModel;
+                    }
+                }
+            }
+            return null;
+        }
     }
 }
