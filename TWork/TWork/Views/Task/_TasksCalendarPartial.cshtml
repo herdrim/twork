@@ -1,0 +1,119 @@
+﻿@model TasksCalendarViewModel
+
+
+<table class="table" style="display:block; overflow: scroll; width: 100%">
+    <tr id="row1">
+        <td style="min-width: 100px; background-color: lightgray">TASK</td>
+        @foreach (var y in Model.Dates)
+        {
+            DateTime now = DateTime.Now;
+            foreach (var m in y.Months)
+            {
+                foreach (var d in m.Days)
+                {
+                    if (now.Year == y.Year && now.Month == m.Month && now.Day == d)
+                    {
+                        <td style="min-width: 200px; background-color: deepskyblue">@String.Format("{0}-{1}-{2}", d, m.Month, y.Year) - today</td>
+                    }
+                    else
+                    {
+                        <td style="min-width: 100px; background-color: lightgray">@String.Format("{0}-{1}-{2}", d, m.Month, y.Year)</td>
+                    }
+                }
+            }
+        }
+    </tr>
+    @for (int i = 0; i < Model.Tasks.Count; i++)
+    {
+    <tr>
+        <td style="min-width: 100px">@Model.Tasks[i].TaskTitle</td>
+        @foreach (var y in Model.Dates)
+        {
+            bool isStarted = false;
+            bool isEnded = false;
+            bool isDeathline = false;
+            string color = "";
+            foreach (var m in y.Months)
+            {
+                foreach (var d in m.Days)
+                {
+                    string text = "";
+
+                    if (Model.Tasks[i].CreateTime.HasValue
+                        && (Model.Tasks[i].CreateTime ?? DateTime.Now).Year == y.Year
+                        && (Model.Tasks[i].CreateTime ?? DateTime.Now).Month == m.Month
+                        && (Model.Tasks[i].CreateTime ?? DateTime.Now).Day == d)
+                    {
+                        text += "Created";
+                    }
+                    if (Model.Tasks[i].StartTime.HasValue
+                        && (Model.Tasks[i].StartTime ?? DateTime.Now).Year == y.Year
+                        && (Model.Tasks[i].StartTime ?? DateTime.Now).Month == m.Month
+                        && (Model.Tasks[i].StartTime ?? DateTime.Now).Day == d)
+                    {                        
+                        isStarted = true;
+                        text += (String.IsNullOrEmpty(text)) ? "Started" : " | Started";
+                    }
+                    if (Model.Tasks[i].EndTime.HasValue
+                        && (Model.Tasks[i].EndTime ?? DateTime.Now).Year == y.Year
+                        && (Model.Tasks[i].EndTime ?? DateTime.Now).Month == m.Month
+                        && (Model.Tasks[i].EndTime ?? DateTime.Now).Day == d)
+                    {
+                        isStarted = false;
+                        isEnded = true;
+                        
+                        text += (String.IsNullOrEmpty(text)) ? "Ended" : " | Ended";
+                    }
+                    if (Model.Tasks[i].Deathline.HasValue
+                        && (Model.Tasks[i].Deathline ?? DateTime.Now).Year == y.Year
+                        && (Model.Tasks[i].Deathline ?? DateTime.Now).Month == m.Month
+                        && (Model.Tasks[i].Deathline ?? DateTime.Now).Day == d)
+                    {
+                        isDeathline = true;
+                        text += (String.IsNullOrEmpty(text)) ? "Deathline" : " | Deathline";
+                    }
+
+                    if (String.IsNullOrEmpty(text))
+                    {
+                        if (isStarted)
+                        {
+                            <td style="min-width: 100px; background-color: limegreen"></td>
+                        }
+                        else
+                        {
+                            <td style="min-width: 100px"></td>
+                        }
+                    }
+                    else
+                    {
+                        if (isStarted || isEnded)
+                        {
+                            color = "limegreen";
+                            if (isStarted && !Model.Tasks[i].EndTime.HasValue)
+                            {
+                                isStarted = false;
+                            }
+                            isEnded = false;
+                        }
+                        if (isDeathline)
+                        {
+                            color = "red";
+                            isDeathline = false;
+                        }
+
+                        if (!String.IsNullOrEmpty(color))
+                        {
+                            <td style="min-width: 100px; background-color: @color">@text</td>
+                            color = "";
+                        }
+                        else
+                        {
+                            <td style="min-width: 100px">@text</td>
+                        }
+                    }
+                }
+            }
+        }
+    </tr>
+    }
+</table>

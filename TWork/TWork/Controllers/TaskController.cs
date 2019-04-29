@@ -75,6 +75,23 @@ namespace TWork.Controllers
             return RedirectToAction("AccessDenied", "Account");
         }
 
+        public async Task<IActionResult> TasksCalendar(int teamId)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamRepository.IsTeamMember(user, teamId))
+            {
+                DateTime today = DateTime.Now;
+                return View(new CalendarDataViewModel
+                {
+                    TeamId = teamId,
+                    DateFrom = new DateTime(today.Year, today.Month, 1),
+                    DateTo = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month)),
+                    OnlyUserTasks = false
+                });
+            }
+            return RedirectToAction("AccessDenied", "Account");
+        }
+
         #region AJAX ACTIONS
 
         public async Task<IActionResult> TaskDetails(int taskId, int teamId)
@@ -125,6 +142,21 @@ namespace TWork.Controllers
                 return JsonConvert.SerializeObject(_taskService.GetTaskComments(taskId));
             }
             return null;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ShowTaskCalendar(CalendarDataViewModel model)
+        {
+            USER user = await _userRepository.GetUserByContext(HttpContext.User);
+            if (_teamRepository.IsTeamMember(user, model.TeamId))
+            {
+                if (ModelState.IsValid)
+                {
+                    var retModel = _taskService.TasksForCalendar(user, model.TeamId, model.DateFrom, model.DateTo, model.OnlyUserTasks);
+                    return PartialView("_TasksCalendarPartial", retModel);
+                }
+            }
+            return RedirectToAction("AccessDenied", "Account");
         }
 
         #endregion

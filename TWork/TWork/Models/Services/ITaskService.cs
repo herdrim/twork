@@ -24,5 +24,6 @@ namespace TWork.Models.Services
         void CreateTaskStatus(TaskStatusCreateModel createModel);
         IEnumerable<TASK> GetTasksByTeamAndStatusIds(int teamId, int taskStatusId);
         bool ChangeTaskStatus(USER user, int taskId, int newStatusId, int teamId);
+        TasksCalendarViewModel TasksForCalendar(USER user, int teamId, DateTime dateFrom, DateTime dateTo, bool userTasksOnly);
     }
 }

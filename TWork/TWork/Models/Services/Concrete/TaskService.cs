@@ -423,5 +423,78 @@ namespace TWork.Models.Services.Concrete
 
             return null;
         }
+
+        public TasksCalendarViewModel TasksForCalendar(USER user, int teamId, DateTime dateFrom, DateTime dateTo, bool userTasksOnly)
+        {
+            TEAM team = _teamRepository.GetTeamById(teamId);
+            if (team != null && dateFrom < dateTo)
+            {
+                List<TASK> tasks = team.TASKs.ToList();
+                tasks = userTasksOnly ? tasks.Where(x => x.USER == user).ToList() : tasks;
+                tasks = tasks.Where(x => (x.START_TIME ?? x.CREATE_TIME) >= dateFrom && (x.END_TIME ?? x.DEATHLINE) <= dateTo).ToList();
+
+                TasksCalendarViewModel retModel = new TasksCalendarViewModel
+                {
+                    TeamId = team.ID,
+                    DateFrom = dateFrom,
+                    DateTo = dateTo,
+                    Dates = new List<CalendarYear>(),
+                    Tasks = new List<TaskForCalendarModel>()
+                };
+
+                if (tasks.Count > 0)
+                {
+                    retModel.Tasks = tasks.Select(x => new TaskForCalendarModel
+                    {
+                        TaskId = x.ID,
+                        TaskTitle = x.TITLE,
+                        CreateTime = x.CREATE_TIME,
+                        StartTime = x.START_TIME,
+                        Deathline = x.DEATHLINE,
+                        EndTime = x.END_TIME
+                    }).ToList();
+                }
+
+                List<CalendarYear> years = new List<CalendarYear>();
+                for (int y = dateFrom.Year; y <= dateTo.Year; y++)
+                {
+                    CalendarYear year = new CalendarYear
+                    {
+                        Year = y,
+                        Months = new List<CalendarMonth>()
+                    };
+                    List<CalendarMonth> months = new List<CalendarMonth>();
+
+                    int m = y > dateFrom.Year ? 1 : dateFrom.Month;
+                    int mTo = y == dateTo.Year ? dateTo.Month : 12;
+
+                    for (; m <= mTo; m++)
+                    {
+                        CalendarMonth month = new CalendarMonth
+                        {
+                            Month = m,
+                            Days = new List<int>()
+                        };
+                        List<int> days = new List<int>();
+                        int d = (y == dateFrom.Year && m == dateFrom.Month) ? dateFrom.Day : 1;
+                        int dTo = (y == dateTo.Year && m == dateTo.Month) ? dateTo.Day : DateTime.DaysInMonth(y, m);
+
+                        for (; d <= dTo; d++)
+                        {
+                            days.Add(d);
+                        }
+                        month.Days = days;
+                        months.Add(month);
+                    }
+                    year.Months = months;
+                    years.Add(year);
+                }
+
+                retModel.Dates = years;
+
+                return retModel;
+            }
+            return null;
+        }
     }
 }
