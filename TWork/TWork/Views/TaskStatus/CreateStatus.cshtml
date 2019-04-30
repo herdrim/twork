@@ -17,6 +17,7 @@
                 <span asp-validation-for="StatusName" class="text-danger"></span>
             </div>
             <div class="form-group">
+                <label>Status before:</label>
                 <select name="IdAfter">
                     @foreach(var status in Model.StatusesAfterNew)
                     {

@@ -7,16 +7,16 @@
 <script>
     $(function () {
         var placeholderElement = $('#modal-placeholder');
-        $('button[data-toggle="ajax-modal"]').click(function (event) {
+        $('div[data-toggle="ajax-modal"]').click(function (event) {
             var url = $(this).data('url');
             $.get(url).done(function (data) {
                 placeholderElement.html(data);
-                placeholderElement.find('.modal').modal('show');                
+                placeholderElement.find('.modal').modal('show');
             });
         });
 
         placeholderElement.on('click', '[data-save="modal"]', function (event) {
-            event.preventDefault();            
+            event.preventDefault();
 
             var form = $(this).parents('.modal').find('#mainForm');
             var actionUrl = form.attr('action');
@@ -49,7 +49,7 @@
             var actionUrl = form.attr('action');
             var dataToSend = form.serialize();
 
-            $.post(actionUrl, dataToSend).done(function (data) {   
+            $.post(actionUrl, dataToSend).done(function (data) {
                 var taskId = dataToSend.substring(0, dataToSend.indexOf('&'));
                 var tmpData = dataToSend.substring(dataToSend.indexOf('&') + 1);
                 var teamId = tmpData.substring(0, tmpData.indexOf('&'));
@@ -61,7 +61,7 @@
                     if (dataGet != null) {
                         $('#actualComments').empty();
                         var commentArray = JSON.parse(dataGet);
-                        for (var i = 0; i < commentArray.length; i++) {                            
+                        for (var i = 0; i < commentArray.length; i++) {
                             $('#actualComments').append("<p>" + commentArray[i].Content + "[" + commentArray[i].UserName + " - " + commentArray[i].Created + "]</p>");
                             $('#actualComments').append("<hr />");
                         }
@@ -75,38 +75,52 @@
 
 <div class="panel-body"><h4>Tasks</h4></div>
 <hr />
-
-@foreach (TasksByStatusModel tasks in Model.TasksByStatus)
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>
-                    @tasks.TaskStatusName
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in tasks.Tasks)
-            {
+<div>
+    @foreach (TasksByStatusModel tasks in Model.TasksByStatus)
+    {
+        <table class="table table-hover" style="max-width: 500px;">
+            <thead class="thead-dark">
                 <tr>
-                    <td>
-                        <div id="modal-placeholder"></div>
-                        <button type="button" class="btn btn-primary" data-toggle="ajax-modal" data-target="#task-details" data-url="@Url.Action("TaskDetails", new { taskId = item.ID, teamId = Model.TeamId })">
-                            <table>
-                                <tr>
-                                    <td>@item.TITLE</td>
-                                    <td>@(item.USER != null ? item.USER.UserName : "No one is assigned")</td>
-                                    <td>@item.DEATHLINE</td>
-                                </tr>
-                            </table>
-                        </button>
-                    </td>
+                    <th>
+                        @tasks.TaskStatusName
+                    </th>
                 </tr>
-            }
-        </tbody>
-    </table>
-}
+            </thead>
+            <tbody>
+                @if (tasks.Tasks.Count > 0)
+                {
+                    @foreach (var item in tasks.Tasks)
+                    {
+                        <tr>
+                            <td>
+                                <div id="modal-placeholder"></div>
+                                <div data-toggle="ajax-modal" data-target="#task-details" data-url="@Url.Action("TaskDetails", new { taskId = item.ID, teamId = Model.TeamId })">
+                                    <div style="display:table">
+                                        <div style="display:table-row">
+                                            <div style="display:table-cell; padding:10px; width:40%">@item.TITLE</div>
+                                            <div style="display:table-cell; padding:10px; width:30%">@(item.USER != null ? item.USER.UserName : "No one is assigned")</div>
+                                            <div style="display:table-cell; padding:10px; width:30%; text-align:right">@(item.DEATHLINE != null ? item.DEATHLINE.ToString() : "No deathline")</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td style="text-align:center">
+                            No tasks
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <br />
+    }
+    </div>
+    <br /><br /><hr />
 
-<a class="btn btn-primary" asp-action="CreateTask" asp-controller="Task" asp-route-teamId="@Model.TeamId">Create Task</a>
-<a class="btn btn-primary" asp-action="TasksCalendar" asp-controller="Task" asp-route-teamId="@Model.TeamId">Tasks calendar</a>
+    <a class="btn btn-primary" asp-action="CreateTask" asp-controller="Task" asp-route-teamId="@Model.TeamId">Create Task</a>
+    <a class="btn btn-primary" asp-action="TasksCalendar" asp-controller="Task" asp-route-teamId="@Model.TeamId">Tasks calendar</a>

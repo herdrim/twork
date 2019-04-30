@@ -37,31 +37,31 @@
 <body>
     <nav class="bg-secondary panel-body" style="padding:0.5em 1em 0.5em 1em;">
 
-        <div>
-            <a class="btn btn-success" href="/MyTeam">Home</a>
-        </div>
-
-        <div class="dropdown">
-            <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                My Teams
-            </button>
-            <div id="dropdownMyTeams" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            </div>
-        </div>
-
-        <div class="dropdown">
-            <button class="btn btn-success dropdown-toggle" type="button" id="dropdownOtherTeamsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Other Teams
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="/Team">Teams</a>
-                <a class="dropdown-item" href="/Team/CreateTeam">Create your team</a>
-            </div>
-        </div>
-        <a style="" class="btn btn-success" asp-action="MyMessages" asp-controller="Message">My Messages</a>
-
         @if (!String.IsNullOrEmpty(User.Identity.Name))
-        {
+        { 
+            <div>
+                <a class="btn btn-success" href="/MyTeam">Home</a>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-success dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    My Teams
+                </button>
+                <div id="dropdownMyTeams" class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                </div>
+            </div>
+
+            <div class="dropdown">
+                <button class="btn btn-success dropdown-toggle" type="button" id="dropdownOtherTeamsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Other Teams
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="/Team">Teams</a>
+                    <a class="dropdown-item" href="/Team/CreateTeam">Create your team</a>
+                </div>
+            </div>
+            <a style="" class="btn btn-success" asp-action="MyMessages" asp-controller="Message">My Messages</a>        
+        
             <a style="" class="btn btn-danger" asp-action="Logout" asp-controller="Account">Log out</a>
         }
         else
