@@ -49,8 +49,6 @@ namespace TWork.Controllers
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_teamRepository.IsTeamMember(user, teamId))
             {
-                HttpContext.Session.Remove(SessionKeys.TEAM_ID_CONTEXT);
-                HttpContext.Session.SetInt32(SessionKeys.TEAM_ID_CONTEXT, teamId);
                 TeamViewModel model = _teamService.GetUserTeam(user, teamId);
                 return View(model);
             }
@@ -61,7 +59,7 @@ namespace TWork.Controllers
         public async Task<IActionResult> Edit(int teamId)
         {
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
-            if (_permissionService.GetPermissionsForUserTeam(user, teamId).IsTeamOwner)
+            if (_permissionService.CheckIfUserIsTeamOwner(user, teamId))
             {
                 return View(_teamService.GetTeamInformation(teamId));
             }

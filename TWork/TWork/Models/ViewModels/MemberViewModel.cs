@@ -10,6 +10,7 @@ namespace TWork.Models.ViewModels
         public string UserId { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
+        public bool IsActualUser { get; set; }
         public List<RoleViewModel> Roles { get; set; }
     }
 }

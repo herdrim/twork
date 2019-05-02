@@ -40,7 +40,7 @@ namespace TWork.Models.Services.Concrete
 
             string title = msg.MESSAGE_TYPE.NAME;
             if (msg.USER_FROM != null)
-                title += " od użytkownika " + msg.USER_FROM.UserName;
+                title += " from user " + msg.USER_FROM.UserName;
 
             MessageViewModel msgViewModel = new MessageViewModel()
             {

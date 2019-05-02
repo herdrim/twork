@@ -121,7 +121,11 @@ class TaskStatusPageState extends State {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: 10.0, top: 20.0),
-            child: Text(statusName),
+            child: Text("Status: " + statusName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),),
+          ),
+          Padding(
+            padding: EdgeInsets.only(bottom: 10.0, top: 20.0),
+            child: Text("Task: ", style: TextStyle(fontSize: 12.0),),
           ),
           Padding(
             padding: EdgeInsets.only( bottom: 30.0),
@@ -130,7 +134,7 @@ class TaskStatusPageState extends State {
                 childWhenDragging: Container(),
                 data: task.taskTitle,              
                 child: Center(
-                  child: Text(task.taskTitle),
+                  child: Text(task.taskTitle, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),),
                 ),
                 feedback: Center(
                   child: Text(task.taskTitle),

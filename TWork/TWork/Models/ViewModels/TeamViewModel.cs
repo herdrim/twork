@@ -11,5 +11,6 @@ namespace TWork.Models.ViewModels
         public string Name { get; set; }
         public int MembersCount { get; set; }
         public int TaskCount { get; set; }
+        public UserTeamPermissionsViewModel Permissions { get; set; }        
     }
 }

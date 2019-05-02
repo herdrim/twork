@@ -32,7 +32,7 @@ namespace TWork.Controllers
             USER user = await _userRepository.GetUserByContext(HttpContext.User);
             if (_teamRepository.IsTeamMember(user, teamId))
             {
-                TeamMemberViewModel model = _teamService.GetTeamMembers(teamId);
+                TeamMemberViewModel model = _teamService.GetTeamMembers(teamId, user);
                 return View(model);
             }
             else

@@ -13,7 +13,7 @@ namespace TWork.Models.Services
         TeamViewModel GetUserTeam(USER user, int teamId);
         List<OtherTeamViewModel> GetOtherTeamsByUser(USER user);
         TeamInformationViewModel GetTeamInformation(int teamId);
-        TeamMemberViewModel GetTeamMembers(int teamId);
+        TeamMemberViewModel GetTeamMembers(int teamId, USER user = null);
         string GetUserTeamsJsonForContext(USER user, int? activeTeamId = null);
         /// <summary>
         /// Create a message (team join request)

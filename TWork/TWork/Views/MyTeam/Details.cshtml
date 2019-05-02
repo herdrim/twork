@@ -31,11 +31,23 @@
 </div>
 <div>
     <a class="btn btn-primary" asp-action="TeamMessages" asp-controller="Message" asp-route-teamId="@Model.Id">Team Messages</a>
-    <a class="btn btn-primary" asp-controller="Role" asp-action="Index" asp-route-teamId="@Model.Id">Edit roles</a>
-    <a class="btn btn-primary" asp-action="Edit" asp-route-teamId="@Model.Id">Edit team information</a>
-    <a class="btn btn-primary" asp-controller="Member" asp-action="Index" asp-route-teamId="@Model.Id">Members</a>
+    @if (Model.Permissions.CanManageUsers)
+    {
+        <a class="btn btn-primary" asp-controller="Role" asp-action="Index" asp-route-teamId="@Model.Id">Edit roles</a>
+    }
+    @if (Model.Permissions.IsTeamOwner)
+    {
+        <a class="btn btn-primary" asp-action="Edit" asp-route-teamId="@Model.Id">Edit team information</a>
+    }
+    @if (Model.Permissions.CanManageUsers)
+    {
+        <a class="btn btn-primary" asp-controller="Member" asp-action="Index" asp-route-teamId="@Model.Id">Members</a>
+    }
     <a class="btn btn-primary" asp-action="Index" asp-controller="Task" asp-route-teamId="@Model.Id">Tasks</a>
-    <a class="btn btn-primary" asp-action="Index" asp-controller="TaskStatus" asp-route-teamId="@Model.Id">Edit task statuses</a>
+    @if (Model.Permissions.IsTeamOwner)
+    {
+        <a class="btn btn-primary" asp-action="Index" asp-controller="TaskStatus" asp-route-teamId="@Model.Id">Edit task statuses</a>
+    }
     <br />
     <a asp-action="Index">Back to List</a>
 </div>

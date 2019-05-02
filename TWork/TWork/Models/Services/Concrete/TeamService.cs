@@ -19,8 +19,9 @@ namespace TWork.Models.Services.Concrete
         IUserRepository _userRepository;
         ITaskRepository _taskRepository;
         IMessageService _messageService;
+        IPermissionService _permissionService;
 
-        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService, IUserRepository userRepository, ITaskRepository taskRepository, IMessageService messageService)
+        public TeamService(ITeamRepository teamRepository, IRoleRepository roleRepository, IMessageRepository messageRepository, IRoleService roleService, IUserRepository userRepository, ITaskRepository taskRepository, IMessageService messageService, IPermissionService permissionService)
         {
             _teamRepository = teamRepository;
             _roleRepository = roleRepository;
@@ -29,6 +30,7 @@ namespace TWork.Models.Services.Concrete
             _userRepository = userRepository;
             _taskRepository = taskRepository;
             _messageService = messageService;
+            _permissionService = permissionService;
         }
 
         public List<OtherTeamViewModel> GetOtherTeamsByUser(USER user)
@@ -138,7 +140,7 @@ namespace TWork.Models.Services.Concrete
                             IsReaded = msg.IS_READED,
                             SendDate = msg.SEND_DATE,
                             Sender = msg.USER_FROM,
-                            Title = MessageTypeNames.TEAM_JOIN_REQUEST + " od użytkownika " + msg.USER_FROM.UserName // DO ZMIANY
+                            Title = MessageTypeNames.TEAM_JOIN_REQUEST + " from user " + msg.USER_FROM.UserName // DO ZMIANY
                         });
                     }
                 }
@@ -189,6 +191,7 @@ namespace TWork.Models.Services.Concrete
                 teamViewModel.Name = team.NAME;
                 teamViewModel.MembersCount = team.USERS_TEAMs.Count;
                 teamViewModel.TaskCount = team.TASKs.Count;
+                teamViewModel.Permissions = _permissionService.GetPermissionsForUserTeam(user, team.ID);
             }
 
             return teamViewModel;
@@ -210,7 +213,7 @@ namespace TWork.Models.Services.Concrete
             }
         }
 
-        public TeamMemberViewModel GetTeamMembers(int teamId)
+        public TeamMemberViewModel GetTeamMembers(int teamId, USER user = null)
         {
             TEAM team = _teamRepository.GetTeamById(teamId);
             TeamMemberViewModel teamMembers = new TeamMemberViewModel();
@@ -226,7 +229,8 @@ namespace TWork.Models.Services.Concrete
                     {
                         UserId = u.Id,
                         UserName = u.UserName,
-                        Email = u.Email,                        
+                        Email = u.Email,
+                        IsActualUser = (user != null && user.Id == u.Id),
                         Roles = u.USER_TEAM_ROLEs.Where(x => x.TEAM_ID == teamId).Select(x => 
                             new RoleViewModel
                             {

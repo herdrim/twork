@@ -18,35 +18,39 @@ class TeamPage extends StatelessWidget {
         title: Text("MyTeam"),
       ),
       body: new Column(
-        children: <Widget>[
-          Text(teamName),
-          RaisedButton(
-            child: Text("Members"),
-            onPressed: () {
-              Navigator.push(context, 
-                MaterialPageRoute(builder: (context) =>
-                   MembersPage(
-                     userLogin: userLogin, 
-                     password: password, 
-                     teamId: teamId
-                  )
-                )
-              );
-            },
-          ),
-          RaisedButton(
-            child: Text("Tasks"),
-            onPressed: () {
-              Navigator.push(context, 
-                MaterialPageRoute(builder: (context) =>
-                   TaskPage(
-                     userLogin: userLogin, 
-                     password: password, 
-                     teamId: teamId
-                  )
-                )
-              );
-            },
+        children: <Widget>[          
+          Text(teamName, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0),),
+          Row(
+            children: <Widget> [
+              RaisedButton(
+                child: Text("Members"),
+                onPressed: () {
+                  Navigator.push(context, 
+                    MaterialPageRoute(builder: (context) =>
+                      MembersPage(
+                        userLogin: userLogin, 
+                        password: password, 
+                        teamId: teamId
+                      )
+                    )
+                  );
+                },
+              ),
+              RaisedButton(
+                child: Text("Tasks"),
+                onPressed: () {
+                  Navigator.push(context, 
+                    MaterialPageRoute(builder: (context) =>
+                      TaskPage(
+                        userLogin: userLogin, 
+                        password: password, 
+                        teamId: teamId
+                      )
+                    )
+                  );
+                },
+              )
+            ]
           )
         ],
       )

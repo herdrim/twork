@@ -13,8 +13,8 @@
     <input type="hidden" name="roleId" value="@Model.RoleId" />
     <input type="hidden" name="teamId" value="@Model.TeamId" />
 
-    <h6 class="bg-info panel-body">Add To @Model.RoleName</h6>
-    <table class="table table-bordered table-condensed">
+    <table class="table table-bordered table-condensed table-hover">
+        <thead class="thead-dark"><tr><th colspan="2">Add To @Model.RoleName</th></tr></thead>
         @if (Model.OtherTeamMembers.Count() == 0)
         {
             <tr><td colspan="2">All Users Are Members</td></tr>
@@ -33,8 +33,8 @@
         }
     </table>
 
-    <h6 class="bg-info panel-body">Remove From @Model.RoleName</h6>
     <table class="table table-bordered table-condensed">
+        <thead class="thead-dark"><tr><th colspan="2">Remove From @Model.RoleName</th></tr></thead>
         @if (Model.RoleMembers.Count() == 0)
         {
             <tr><td colspan="2">All Users Are Members</td></tr>

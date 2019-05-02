@@ -42,9 +42,12 @@
                     </ul>
                 </td>
                 <td>
-                    <form asp-action="DeleteMember" asp-controller="Member" method="post" asp-route-memberId="@item.UserId" asp-route-teamId="@Model.TeamId">
-                        <input type="submit" class="btn-sm btn-danger" value="Delete member" />
-                    </form>
+                    @if (!item.IsActualUser)
+                    {
+                        <form asp-action="DeleteMember" asp-controller="Member" method="post" asp-route-memberId="@item.UserId" asp-route-teamId="@Model.TeamId">
+                            <input type="submit" class="btn-sm btn-danger" value="Delete member" />
+                        </form>
+                    }
                 </td>
             </tr>
         }

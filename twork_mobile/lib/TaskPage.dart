@@ -82,17 +82,6 @@ class TaskPageState extends State {
         child: Text(tasksStatuses[index].tasks[pos].taskTitle),
       )
     );
-    if (tasksStatuses[index].tasks[pos].startTime != null && tasksStatuses[index].tasks[pos].startTime != ""){
-      widgets.add(
-        Container(
-          padding: const EdgeInsets.all(5.0),
-          decoration: new BoxDecoration(
-            border: Border( right: BorderSide(color: Colors.black))
-          ),
-          child: Text(tasksStatuses[index].tasks[pos].startTime),
-        )
-      );
-    }
     if (tasksStatuses[index].tasks[pos].deathline != null && tasksStatuses[index].tasks[pos].deathline != ""){
       widgets.add(
         Container(
@@ -104,6 +93,18 @@ class TaskPageState extends State {
         )
       );   
     } 
+    else{
+      widgets.add(
+        Container(
+          padding: const EdgeInsets.all(5.0),
+          decoration: new BoxDecoration(
+            border: Border( right: BorderSide(color: Colors.black))
+          ),
+          child: Text("No deathline"),
+        )
+      );  
+    }
+
     return widgets;              
   }
 
@@ -111,7 +112,7 @@ class TaskPageState extends State {
     TasksByStatuses.getTasks(userLogin, password, teamId).then((http.Response response) {
       setState(() {
        Iterable list = json.decode(response.body);
-       tasksStatuses = list.map((model) => TaskStatus.fromJson(model)).toList();
+       tasksStatuses = list.map((model) => TaskStatus.fromJson(model)).toList();       
       });
     });
   }
