@@ -48,13 +48,15 @@
 
     var url = '@Url.Action("ShowTaskCalendar", "Task")';
     $('#btnShowCalendar').click(function () {
-        var data = {
-            TeamId: $('#formTeamId').val(),
-            DateFrom: $('#formDateFrom').val(),
-            DateTo: $('#formDateTo').val(),
-            OnlyUserTasks: $('#formOnlyUserTasks').is(':checked')
+        if ($('#formDateFrom').val() <= $('#formDateTo').val()) {
+            var data = {
+                TeamId: $('#formTeamId').val(),
+                DateFrom: $('#formDateFrom').val(),
+                DateTo: $('#formDateTo').val(),
+                OnlyUserTasks: $('#formOnlyUserTasks').is(':checked')
+            }
+            $('#results').load(url, data);
         }
-        $('#results').load(url, data);
     });
 
 </script>

@@ -17,7 +17,12 @@ namespace TWork.Models.Services.Concrete
         IPermissionService _permissionService;
         ICommentRepository _commentRepository;
 
-        public TaskService(IRoleRepository roleRepository, ITeamRepository teamRepository, IUserRepository userRepository, ITaskRepository taskRepository, IPermissionService permissionService, ICommentRepository commentRepository)
+        public TaskService(IRoleRepository roleRepository, 
+            ITeamRepository teamRepository, 
+            IUserRepository userRepository, 
+            ITaskRepository taskRepository, 
+            IPermissionService permissionService, 
+            ICommentRepository commentRepository)
         {
             _roleRepository = roleRepository;
             _teamRepository = teamRepository;

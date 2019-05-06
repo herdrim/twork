@@ -86,7 +86,7 @@ class LoginPage extends StatelessWidget {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Post'),
+        title: Text('Login'),
       ),
       body: new Container(
         margin: const EdgeInsets.only(left: 8.0, right: 8.0),
